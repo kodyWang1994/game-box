@@ -29,6 +29,7 @@ export default {
   right: 0;
   padding: 15px;
   background-color: #eee;
+  overflow: scroll;
 }
 
 p {

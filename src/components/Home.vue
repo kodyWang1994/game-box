@@ -32,7 +32,7 @@ export default {
 
 <style scoped>
 .home-container{
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -41,6 +41,7 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  overflow: scroll;
 }
 
 .abort-us {
