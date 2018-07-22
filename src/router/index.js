@@ -6,6 +6,7 @@ import Eliminate from '@/components/Eliminate'
 import PopBlock from '@/components/PopBlock'
 import DragBlock from '@/components/DragBlock'
 import Draw from '@/components/Draw'
+import Date from '@/components/date-select'
 import AbortUs from '@/components/AbortUs'
 
 Vue.use(Router)
@@ -42,6 +43,11 @@ export default new Router({
       path: '/draw',
       name: 'Draw',
       component: Draw
+    },
+    {
+      path: '/date',
+      name: 'Date',
+      component: Date
     },
     {
       path: '/abort-us',
