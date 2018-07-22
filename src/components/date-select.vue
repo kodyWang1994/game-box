@@ -60,12 +60,7 @@ export default {
     },
     getDays () {
       let days = []
-      let thisMounthFirstDay = this.year.toString() + '-' + this.mounthFormat + '-01'
-      let firstDayWeek = _.indexOf(this.weeks, Moment(thisMounthFirstDay).format('dd'))
-      alert(thisMounthFirstDay)
-      alert(Moment(thisMounthFirstDay.toString()).format('dd'))
-      alert(Moment('2018-7-20').format('dd'))
-      alert(firstDayWeek)
+      let firstDayWeek = _.indexOf(this.weeks, Moment(this.year + '-' + this.mounthFormat + '-01').format('dd'))
       let thisMounthDayCount = Moment(this.year + '-' + this.mounth).daysInMonth()
       let lastMounthDays = _.range(firstDayWeek)
       _.each(lastMounthDays, () => {
@@ -90,8 +85,8 @@ export default {
   },
   methods: {
     lastMounth () {
-      if (this.mounth > 1) {
-        this.mounth -= 1
+      if (this.mounthFormat > 1) {
+        this.mounthFormat -= 1
       } else {
         this.year -= 1
         this.mounth = 12
@@ -107,9 +102,9 @@ export default {
     },
     isBetween (day) {
       if (this.startDate && this.endDate) {
-        return Moment(this.year + '-' + this.mounth + '-' + day).isBetween(this.startDateFormat, this.endDateFormat)
+        return Moment(this.year + '-' + this.mounthFormat + '-' + day).isBetween(this.startDateFormat, this.endDateFormat)
       } else if (this.dates && this.dates.length > 0) {
-        let dayDate = Moment(this.year + '-' + this.mounth + '-' + day).format('YYYY-MMDD')
+        let dayDate = Moment(this.year + '-' + this.mounthFormat + '-' + day).format('YYYY-MMDD')
         return _.indexOf(this.datesFormat, dayDate) > -1
       } else {
         return true
@@ -118,21 +113,21 @@ export default {
     selectDate (day) {
       if (day) {
         if (this.startDate && this.endDate) {
-          if (Moment(this.year + '-' + this.mounth + '-' + day).isBetween(this.startDateFormat, this.endDateFormat)) {
+          if (Moment(this.year + '-' + this.mounthFormat + '-' + day).isBetween(this.startDateFormat, this.endDateFormat)) {
             this.activeDay = day
-            this.activeMounth = this.mounth
+            this.activeMounth = this.mounthFormat
             this.$emit('selectedDate', Moment(this.year + '-' + this.activeMounth + '-' + this.activeDay).format('YYYY-MMDD'))
           }
         } else if (this.dates && this.dates.length > 0) {
-          let dayDate = Moment(this.year + '-' + this.mounth + '-' + day).format('YYYY-MMDD')
+          let dayDate = Moment(this.year + '-' + this.mounthFormat + '-' + day).format('YYYY-MMDD')
           if (_.indexOf(this.datesFormat, dayDate) > -1) {
             this.activeDay = day
-            this.activeMounth = this.mounth
+            this.activeMounth = this.mounthFormat
             this.$emit('selectedDate', Moment(this.year + '-' + this.activeMounth + '-' + this.activeDay).format('YYYY-MMDD'))
           }
         } else {
           this.activeDay = day
-          this.activeMounth = this.mounth
+          this.activeMounth = this.mounthFormat
           this.$emit('selectedDate', Moment(this.year + '-' + this.activeMounth + '-' + this.activeDay).format('YYYY-MMDD'))
         }
       }
