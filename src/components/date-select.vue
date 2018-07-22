@@ -85,8 +85,8 @@ export default {
   },
   methods: {
     lastMounth () {
-      if (this.mounthFormat > 1) {
-        this.mounthFormat -= 1
+      if (this.mounth > 1) {
+        this.mounth -= 1
       } else {
         this.year -= 1
         this.mounth = 12
