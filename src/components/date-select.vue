@@ -51,13 +51,20 @@ export default {
         return Moment(date).format('YYYY-MMDD')
       })
     },
+    mounthFormat () {
+      if (this.mounth.length === 1) {
+        return '0' + this.mounth
+      } else {
+        return this.mounth
+      }
+    },
     getDays () {
       let days = []
-      let thisMounthFirstDay = this.year.toString() + '-' + this.mounth.toString() + '-01'
+      let thisMounthFirstDay = this.year.toString() + '-' + this.mounthFormat + '-01'
       let firstDayWeek = _.indexOf(this.weeks, Moment(thisMounthFirstDay).format('dd'))
       alert(thisMounthFirstDay)
       alert(Moment(thisMounthFirstDay.toString()).format('dd'))
-      alert(Moment('2018-07-20').format('dd'))
+      alert(Moment('2018-7-20').format('dd'))
       alert(firstDayWeek)
       let thisMounthDayCount = Moment(this.year + '-' + this.mounth).daysInMonth()
       let lastMounthDays = _.range(firstDayWeek)
