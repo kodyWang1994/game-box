@@ -61,7 +61,7 @@ export default {
     getDays () {
       let days = []
       let firstDayWeek = _.indexOf(this.weeks, Moment(this.year + '-' + this.mounthFormat + '-01').format('dd'))
-      let thisMounthDayCount = Moment(this.year + '-' + this.mounth).daysInMonth()
+      let thisMounthDayCount = Moment(this.year + '-' + this.mounthFormat).daysInMonth()
       let lastMounthDays = _.range(firstDayWeek)
       _.each(lastMounthDays, () => {
         days.push(
