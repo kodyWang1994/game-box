@@ -55,6 +55,7 @@ export default {
       let days = []
       let firstDayWeek = _.indexOf(this.weeks, Moment(new Date(this.year + '-' + this.mounth + '-01').getTime()).format('dd'))
       alert(Moment(new Date(this.year + '-' + this.mounth + '-01').getTime()).format('dd'))
+      alert(Moment('2018-07-28').format('dd'))
       alert(firstDayWeek)
       let thisMounthDayCount = Moment(this.year + '-' + this.mounth).daysInMonth()
       let lastMounthDays = _.range(firstDayWeek)
