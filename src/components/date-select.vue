@@ -52,7 +52,7 @@ export default {
       })
     },
     mounthFormat () {
-      if (this.mounth.length === 1) {
+      if (this.mounth < 10) {
         return '0' + this.mounth
       } else {
         return this.mounth
