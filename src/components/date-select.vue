@@ -53,8 +53,9 @@ export default {
     },
     getDays () {
       let days = []
-      let firstDayWeek = _.indexOf(this.weeks, Moment(new Date(this.year + '-' + this.mounth + '-01').getTime()).format('dd'))
-      alert(Moment(new Date(this.year + '-' + this.mounth + '-01').getTime()).format('dd'))
+      let thisMounthFirstDay = this.year + '-' + this.mounth + '-01'
+      let firstDayWeek = _.indexOf(this.weeks, Moment(thisMounthFirstDay).format('dd'))
+      alert(Moment(thisMounthFirstDay).format('dd'))
       alert(Moment('2018-07-28').format('dd'))
       alert(firstDayWeek)
       let thisMounthDayCount = Moment(this.year + '-' + this.mounth).daysInMonth()
