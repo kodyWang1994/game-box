@@ -1,5 +1,10 @@
 <template>
   <div class="color-container">
+    <div class="size-wrap">
+      <div>选择密度</div>
+      <div @click="selectSize(size * 10)" :class="'size-' + size" v-for="size in 5" :key="size">{{size * 10}}</div>
+    </div>
+
     <div class="game-panel">
       <div v-for="(index, col) in (blockCount * blockCount)" :key="col" :style="'width: ' + blockSize + '; height: ' + blockSize + ';'">
         <div class="col-item" :class="blockColors[index]"></div>
@@ -77,6 +82,10 @@ export default {
         callback()
       }
     },
+    selectSize (size) {
+      this.blockCount = size
+      this.init()
+    },
     init () {
       for (let w = 1; w <= this.blockCount * this.blockCount; w++) {
         this.blockColors[w] = _.sample(this.colors)
@@ -90,6 +99,34 @@ export default {
 .color-container {
   margin: auto;
   max-width: 380px;
+}
+
+.size-wrap {
+  padding: 15px 15px 0;
+  display: flex;
+  justify-content: space-around;
+  color: #333;
+  font-weight: 600;
+}
+
+.size-wrap .size-1 {
+  color: #eee;
+}
+
+.size-wrap .size-2 {
+  color: #ddd;
+}
+
+.size-wrap .size-3 {
+  color: #ccc;
+}
+
+.size-wrap .size-4 {
+  color: #bbb;
+}
+
+.size-wrap .size-5 {
+  color: #aaa;
 }
 
 .game-panel {
