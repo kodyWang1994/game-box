@@ -13,6 +13,7 @@
       <a href="index.html#/drag-block" class="menu-item">拖动方块</a>
       <a href="index.html#/draw" class="menu-item">画板</a>
       <a href="index.html#/date" class="menu-item">日历</a>
+      <a href="index.html#/color" class="menu-item">烧脑颜色</a>
     </div>
     <div class="abort-us">
       <!-- <a href="/abort-us">关于作品</a> -->
@@ -46,10 +47,7 @@ export default {
 }
 
 .abort-us {
-  position: absolute;
-  bottom: 20px;
-  left: 0;
-  right: 0;
+  padding: 20px;
   text-align: center;
 }
 
