@@ -138,6 +138,8 @@ export default {
   border-radius: 10px;
   width: 10vw;
   height: 20vw;
+  max-width: 80px;
+  max-height: 120px;
 }
 
 .rule-wrap {
