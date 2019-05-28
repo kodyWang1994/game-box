@@ -160,19 +160,19 @@ export default {
 }
 
 .red {
-  background-image: url('http://odotehbgw.bkt.clouddn.com/bear.jpg');
+  background-color: #FFC1C1;
 }
 
 .yellow {
-  background-image: url('http://odotehbgw.bkt.clouddn.com/cat.jpg');
+  background-color: #EEEE00;
 }
 
 .blue {
-  background-image: url('http://odotehbgw.bkt.clouddn.com/chicken.jpg');
+  background-color: #1E90FF;
 }
 
 .green {
-  background-image: url('http://odotehbgw.bkt.clouddn.com/snake.jpg');
+  background-color: #66CD00;
 }
 
 .rule-text  {

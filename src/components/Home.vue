@@ -39,7 +39,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528104173978&di=6b0ea00e6e08c88f6c7404aeb69d41c9&imgtype=0&src=http%3A%2F%2Fpic3.16pic.com%2F00%2F07%2F65%2F16pic_765494_b.jpg');
+  background-image: url('https://images.pexels.com/photos/18174/reflection-pad-gaming-gamepad.jpg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -53,7 +53,8 @@ export default {
 
 .abort-us a {
   text-decoration-line: none;
-  color: #888;
+  color: #333;
+  text-shadow: #7777d8 2px 2px 10px;
 }
 
 .title {
@@ -61,6 +62,7 @@ export default {
   font-size: 28px;
   margin: 75px 0;
   color: #fff;
+  text-shadow: #7777d8 2px 2px 10px;
 }
 
 .menu-wrap {
@@ -78,6 +80,6 @@ export default {
   margin-bottom: 15px;
   text-align: center;
   color: #fff;
-  box-shadow: #999 0 0 6px 0px;
+  box-shadow: #7777d9 0 0 6px 0px;
 }
 </style>

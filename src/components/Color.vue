@@ -5,6 +5,11 @@
       <div @click="selectSize(size * 10)" :class="'size-' + size" v-for="size in 5" :key="size">{{size * 10}}</div>
     </div>
 
+    <div class="step-wrap">
+      <div>剩余步数</div>
+      <div class="step">{{step}}</div>
+    </div>
+
     <div class="game-panel">
       <div v-for="(index, col) in (blockCount * blockCount)" :key="col" :style="'width: ' + blockSize + '; height: ' + blockSize + ';'">
         <div class="col-item" :class="blockColors[index]"></div>
@@ -18,6 +23,11 @@
       <div>游戏规则：</div>
       <div>点击下方色块，以左上角为原点，逐步吞噬相邻颜色，直到所有颜色统一</div>
     </div>
+
+    <div v-show="isOver" class="over-panel">
+      <div class="over-text">游戏结束</div>
+      <span @click="init" class="restart">重新开始</span>
+    </div>
   </div>
 </template>
 
@@ -27,7 +37,9 @@ import _ from 'underscore'
 export default {
   data () {
     return {
-      blockCount: 20,
+      isOver: false,
+      step: 0,
+      blockCount: 10,
       colors: ['red', 'yellow', 'blue', 'green'],
       blockColors: {}
     }
@@ -42,6 +54,10 @@ export default {
   },
   methods: {
     clearBlock (color) {
+      if (color === this.blockColors[1]) {
+        return
+      }
+      this.step = this.step - 1
       this.selectedColor = color
       console.log(Date.now())
       this.getNeedCleanBlock(1, [1], this.changeSelectColor)
@@ -52,6 +68,8 @@ export default {
         blockColors[key] = this.selectedColor
       }
       this.blockColors = blockColors
+
+      this.checkGameStatus()
     },
     getNeedCleanBlock (index, needCleanBlock, callback) {
       let color = this.blockColors[index]
@@ -86,7 +104,19 @@ export default {
       this.blockCount = size
       this.init()
     },
+    checkGameStatus () {
+      let colors = _.groupBy(this.blockColors)
+      if (_.size(colors) === 1) {
+        this.selectSize(this.blockCount + 10)
+        return
+      }
+      if (this.step <= 0) {
+        this.isOver = true
+      }
+    },
     init () {
+      this.isOver = false
+      this.step = this.blockCount * 1.2
       for (let w = 1; w <= this.blockCount * this.blockCount; w++) {
         this.blockColors[w] = _.sample(this.colors)
       }
@@ -129,6 +159,20 @@ export default {
   color: #aaa;
 }
 
+.step-wrap {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  justify-content: center;
+}
+
+.step-wrap .step {
+  margin-left: 10px;
+  font-weight: 600;
+  color: #555;
+}
+
 .game-panel {
   display: flex;
   align-items: center;
@@ -149,19 +193,19 @@ export default {
 }
 
 .red {
-  background-color: red;
+  background-color: #FFC1C1;
 }
 
 .yellow {
-  background-color: yellow;
+  background-color: #EEEE00;
 }
 
 .blue {
-  background-color: blue;
+  background-color: #1E90FF;
 }
 
 .green {
-  background-color: green;
+  background-color: #66CD00;
 }
 
 .color-btn-wrap {
@@ -183,5 +227,36 @@ export default {
   padding: 15px;
   color: #ccc;
   font-size: 15px;
+}
+
+.over-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.over-text {
+  color: #4B0082;
+  margin-top: 150px;
+  font-weight: bold;
+  animation: over-animation 2s linear .1s infinite alternate;
+}
+
+.restart {
+  margin-top: 30px;
+  padding: 10px 15px;
+  background-color: #B0E2FF;
+  border-radius: 15px;
+  display: inline-block;
+  color: #fff;
+}
+
+@keyframes over-animation {
+  from {font-size: 15px;}
+  to {font-size: 25px;}
 }
 </style>
