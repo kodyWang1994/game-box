@@ -25,7 +25,7 @@ export default {
       x: 20,
       y: 120,
       blockColors: {},
-      colors: ['#b23aee', '#ff7f24', '#0000ff', '#008000'],
+      colors: ['#FFC1C1', '#EEEE00', '#1E90FF', '#66CD00'],
       currentSource: 0,
       targetSource: 1500,
       step: 1,

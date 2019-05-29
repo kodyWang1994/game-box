@@ -10,7 +10,7 @@
         <div class="week-item" v-for="(week, i) in weeks" :key="i">{{week}}</div>
       </div>
       <div class="day-wrap font-size-14">
-        <div class="day" @click="selectDate(day.day)" :class="{'today': (day.day == today && mounth == thisMounth), 'active': (day.day == activeDay && mounth == activeMounth), 'disable': day.disable}" v-for="(day, i) in getDays" :key="i">
+        <div class="day" @click="selectDate(day.day)" :class="{'today': (day.day == today && mounth == thisMounth), 'active': (day.day == activeDay && mounth == activeMounth), 'disable': day.disable}" v-for="(day, i) in getDays()" :key="i">
           <div class="day-text">{{day.day}}</div>
         </div>
       </div>
@@ -57,30 +57,6 @@ export default {
       } else {
         return this.mounth
       }
-    },
-    getDays () {
-      let days = []
-      let firstDayWeek = _.indexOf(this.weeks, Moment(this.year + '-' + this.mounthFormat + '-01').format('dd'))
-      let thisMounthDayCount = Moment(this.year + '-' + this.mounthFormat).daysInMonth()
-      let lastMounthDays = _.range(firstDayWeek)
-      lastMounthDays.map(() => {
-        days.push(
-          {
-            day: '',
-            disable: true
-          }
-        )
-      })
-      let thisMounthDays = _.range(1, thisMounthDayCount + 1)
-      thisMounthDays.map(day => {
-        days.push(
-          {
-            day: day,
-            disable: !this.isBetween(day)
-          }
-        )
-      })
-      return days
     }
   },
   methods: {
@@ -131,6 +107,30 @@ export default {
           this.$emit('selectedDate', Moment(this.year + '-' + this.activeMounth + '-' + this.activeDay).format('YYYY-MMDD'))
         }
       }
+    },
+    getDays () {
+      let days = []
+      let firstDayWeek = _.indexOf(this.weeks, Moment(this.year + '-' + this.mounthFormat + '-01').format('dd'))
+      let thisMounthDayCount = Moment(this.year + '-' + this.mounthFormat).daysInMonth()
+      let lastMounthDays = _.range(firstDayWeek)
+      lastMounthDays.map(() => {
+        days.push(
+          {
+            day: '',
+            disable: true
+          }
+        )
+      })
+      let thisMounthDays = _.range(1, thisMounthDayCount + 1)
+      thisMounthDays.map(day => {
+        days.push(
+          {
+            day: day,
+            disable: !this.isBetween(day)
+          }
+        )
+      })
+      return days
     }
   }
 }

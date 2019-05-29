@@ -6,6 +6,8 @@
     </div>
 
     <div class="step-wrap">
+      <div>当前关卡</div>
+      <div class="step">{{blockCount / 10}}</div>
       <div>剩余步数</div>
       <div class="step">{{step}}</div>
     </div>
@@ -24,6 +26,11 @@
       <div>点击下方色块，以左上角为原点，逐步吞噬相邻颜色，直到所有颜色统一</div>
     </div>
 
+    <div v-show="isSuccess" class="success-panel">
+      <div class="success-text">闯关成功</div>
+      <span @click="nextPass" class="next-pass">下一关</span>
+    </div>
+
     <div v-show="isOver" class="over-panel">
       <div class="over-text">游戏结束</div>
       <span @click="init" class="restart">重新开始</span>
@@ -38,6 +45,7 @@ export default {
   data () {
     return {
       isOver: false,
+      isSuccess: false,
       step: 0,
       blockCount: 10,
       colors: ['red', 'yellow', 'blue', 'green'],
@@ -60,7 +68,8 @@ export default {
       this.step = this.step - 1
       this.selectedColor = color
       console.log(Date.now())
-      this.getNeedCleanBlock(1, [1], this.changeSelectColor)
+      this.getNeedCleanBlock(1)
+      this.changeSelectColor()
     },
     changeSelectColor () {
       var blockColors = Object.assign({}, this.blockColors)
@@ -71,34 +80,36 @@ export default {
 
       this.checkGameStatus()
     },
-    getNeedCleanBlock (index, needCleanBlock, callback) {
+    getNeedCleanBlock (index) {
+      this.needCleanBlock = [index]
+      let blockStark = [index]
+      do {
+        let surroundBlocks = this.getSurroundBlock(blockStark.pop())
+        for (let blockIndex of surroundBlocks) {
+          if (_.indexOf(this.needCleanBlock, blockIndex) === -1) {
+            this.needCleanBlock.push(blockIndex)
+            blockStark.push(blockIndex)
+          }
+        }
+      } while (blockStark.length > 0)
+      console.log('finished', this.needCleanBlock, Date.now())
+    },
+    getSurroundBlock (index) {
       let color = this.blockColors[index]
-      let hasNeedClearBlock = false
-      if (index % this.blockCount !== 0 && _.indexOf(needCleanBlock, index + 1) === -1 && color === this.blockColors[index + 1]) {
-        hasNeedClearBlock = true
-        needCleanBlock.push(index + 1)
-        this.getNeedCleanBlock(index + 1, needCleanBlock, callback)
+      let surroundBlock = []
+      if (index % this.blockCount !== 0 && _.indexOf(this.needCleanBlock, index + 1) === -1 && color === this.blockColors[index + 1]) {
+        surroundBlock.push(index + 1)
       }
-      if (index % this.blockCount !== 1 && _.indexOf(needCleanBlock, index - 1) === -1 && color === this.blockColors[index - 1]) {
-        hasNeedClearBlock = true
-        needCleanBlock.push(index - 1)
-        this.getNeedCleanBlock(index - 1, needCleanBlock, callback)
+      if (index % this.blockCount !== 1 && _.indexOf(this.needCleanBlock, index - 1) === -1 && color === this.blockColors[index - 1]) {
+        surroundBlock.push(index - 1)
       }
-      if (_.indexOf(needCleanBlock, index + this.blockCount) === -1 && color === this.blockColors[index + this.blockCount]) {
-        hasNeedClearBlock = true
-        needCleanBlock.push(index + this.blockCount)
-        this.getNeedCleanBlock(index + this.blockCount, needCleanBlock, callback)
+      if (_.indexOf(this.needCleanBlock, index + this.blockCount) === -1 && color === this.blockColors[index + this.blockCount]) {
+        surroundBlock.push(index + this.blockCount)
       }
-      if (_.indexOf(needCleanBlock, index - this.blockCount) === -1 && color === this.blockColors[index - this.blockCount]) {
-        hasNeedClearBlock = true
-        needCleanBlock.push(index - this.blockCount)
-        this.getNeedCleanBlock(index - this.blockCount, needCleanBlock, callback)
+      if (_.indexOf(this.needCleanBlock, index - this.blockCount) === -1 && color === this.blockColors[index - this.blockCount]) {
+        surroundBlock.push(index - this.blockCount)
       }
-      if (!hasNeedClearBlock) {
-        this.needCleanBlock = needCleanBlock
-        console.log('finished', needCleanBlock, Date.now())
-        callback()
-      }
+      return surroundBlock
     },
     selectSize (size) {
       this.blockCount = size
@@ -107,15 +118,19 @@ export default {
     checkGameStatus () {
       let colors = _.groupBy(this.blockColors)
       if (_.size(colors) === 1) {
-        this.selectSize(this.blockCount + 10)
+        this.isSuccess = true
         return
       }
       if (this.step <= 0) {
         this.isOver = true
       }
     },
+    nextPass () {
+      this.selectSize(this.blockCount + 10)
+    },
     init () {
       this.isOver = false
+      this.isSuccess = false
       this.step = this.blockCount * 1.2
       for (let w = 1; w <= this.blockCount * this.blockCount; w++) {
         this.blockColors[w] = _.sample(this.colors)
@@ -168,7 +183,7 @@ export default {
 }
 
 .step-wrap .step {
-  margin-left: 10px;
+  margin: 0 10px;
   font-weight: 600;
   color: #555;
 }
@@ -240,10 +255,11 @@ export default {
 }
 
 .over-text {
+  font-size: 18px;
   color: #4B0082;
   margin-top: 150px;
   font-weight: bold;
-  animation: over-animation 2s linear .1s infinite alternate;
+  animation: trans-animation 2s linear .1s infinite alternate;
 }
 
 .restart {
@@ -255,8 +271,35 @@ export default {
   color: #fff;
 }
 
-@keyframes over-animation {
-  from {font-size: 15px;}
-  to {font-size: 25px;}
+.success-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.success-text {
+  font-size: 18px;
+  color: #333;
+  margin-top: 150px;
+  font-weight: bold;
+  animation: trans-animation 2s linear .1s infinite alternate;
+}
+
+.next-pass {
+  margin-top: 30px;
+  padding: 10px 15px;
+  background-color: #BCEE68;
+  border-radius: 15px;
+  display: inline-block;
+  color: #fff;
+}
+
+@keyframes trans-animation {
+  from {transform: scale(0.9)}
+  to {transform: scale(1.3)}
 }
 </style>

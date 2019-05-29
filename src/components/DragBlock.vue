@@ -261,7 +261,7 @@ export default {
 }
 
 .red {
-  background-color: red !important;
+  background-color: #FFC125 !important;
   border: 1px solid #fff !important;
 }
 
