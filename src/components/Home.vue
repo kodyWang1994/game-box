@@ -11,9 +11,10 @@
       <a href="index.html#/eliminate" class="menu-item">消消乐</a>
       <a href="index.html#/pop-block" class="menu-item">消灭方块</a>
       <a href="index.html#/drag-block" class="menu-item">拖动方块</a>
+      <a href="index.html#/color" class="menu-item">烧脑颜色</a>
+      <a href="index.html#/number-eliminate" class="menu-item">数字消消乐</a>
       <a href="index.html#/draw" class="menu-item">画板</a>
       <a href="index.html#/date" class="menu-item">日历</a>
-      <a href="index.html#/color" class="menu-item">烧脑颜色</a>
     </div>
     <div class="abort-us">
       <!-- <a href="/abort-us">关于作品</a> -->

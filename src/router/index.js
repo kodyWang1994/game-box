@@ -7,6 +7,7 @@ import PopBlock from '@/components/PopBlock'
 import DragBlock from '@/components/DragBlock'
 import Draw from '@/components/Draw'
 import Color from '@/components/Color'
+import NumberEliminate from '@/components/NumberEliminate'
 import Date from '@/components/DateSelect'
 import AbortUs from '@/components/AbortUs'
 
@@ -49,6 +50,11 @@ export default new Router({
       path: '/color',
       name: 'Color',
       component: Color
+    },
+    {
+      path: '/number-eliminate',
+      name: 'NumberEliminate',
+      component: NumberEliminate
     },
     {
       path: '/date',
