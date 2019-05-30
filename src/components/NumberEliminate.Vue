@@ -87,7 +87,9 @@ export default {
 
       this.blockNumbers = blockNumbers
 
-      this.checkNearBlock()
+      setTimeout(() => {
+        this.checkNearBlock()
+      }, 400)
     },
     checkNearBlock () {
       let hasNeedClearBlock = false
