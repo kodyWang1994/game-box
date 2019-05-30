@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="source-wrap">得分：{{source}}</div>
     <div class="game-panel"
       @touchstart="start"
       @touchmove="move"
@@ -7,6 +8,11 @@
       <div class="col-wrap" v-for="(index) in (blockCount * blockCount)" :key="index">
         <div class="col" :class="'num-' + blockNumbers[index]" v-if="blockNumbers[index]" :data-index="index">{{blockNumbers[index]}}</div>
       </div>
+    </div>
+
+    <div class="rule-wrap">
+      <div>游戏规则：</div>
+      <div>移动数字，三个及以上相邻的数字会消除</div>
     </div>
   </div>
 </template>
@@ -17,6 +23,7 @@ import _ from 'underscore'
 export default {
   data () {
     return {
+      source: 0,
       blockCount: 5,
       startIndex: '',
       initNumber: [1, 2, 3, 4, 5, 6],
@@ -61,6 +68,9 @@ export default {
       }
     },
     moveBlock (targetIndex) {
+      if (this.cleaning) {
+        return
+      }
       let xIndex = this.startIndex % this.blockCount
       if (xIndex === 0 && targetIndex % this.blockCount === 1) {
         return
@@ -80,6 +90,7 @@ export default {
       this.checkNearBlock()
     },
     checkNearBlock () {
+      let hasNeedClearBlock = false
       for (let index = 1; index <= this.blockCount * this.blockCount; index++) {
         let nearBlock = [index]
         let blockStark = [index]
@@ -93,9 +104,13 @@ export default {
           }
         } while (blockStark.length > 0)
         if (nearBlock.length >= 3) {
+          hasNeedClearBlock = true
           this.cleanBlock(nearBlock)
           break
         }
+      }
+      if (!hasNeedClearBlock) {
+        this.cleaning = false
       }
     },
     getSurroundBlock (index, needCleanBlock) {
@@ -117,12 +132,14 @@ export default {
     },
     cleanBlock (blocks) {
       console.log(blocks)
+      this.cleaning = true
       let currentIndex = blocks[0]
       let number = this.blockNumbers[currentIndex] + 1
       for (let index of blocks) {
         this.$set(this.blockNumbers, index, '')
       }
       this.$set(this.blockNumbers, currentIndex, number)
+      this.source += (blocks.length * number)
       this.fullBlock(blocks, currentIndex).then(
         () => {
           setTimeout(() => {
@@ -157,6 +174,21 @@ export default {
 </script>
 
 <style scoped>
+.source-wrap {
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-weight: 600;
+  justify-content: center;
+}
+
+.rule-wrap {
+  padding: 15px;
+  color: #ccc;
+  font-size: 15px;
+}
+
 .game-panel {
   display: flex;
   align-items: center;
@@ -210,7 +242,7 @@ export default {
 
 .game-panel .num-4 {
   background-color: #EEB422;
-  color: #E0E0E0;
+  color: #FFF;
   animation: trans-animation .4s;
 }
 
@@ -227,9 +259,27 @@ export default {
 }
 
 .game-panel .num-7 {
-  background-color: #CDB5CD;
-  color: #E0E0E0;
+  background-color: #CDAD00;
+  color: #FFF;
   animation: trans-animation .4s;
+}
+
+.game-panel .num-8 {
+  background-color: #CFF5CD;
+  color: #FFF;
+  animation: trans-animation .3s;
+}
+
+.game-panel .num-9 {
+  background-color: #CD5B45;
+  color: #FFF;
+  animation: trans-animation .3s;
+}
+
+.game-panel .num-10 {
+  background-color: #B23AEE;
+  color: #FFF;
+  animation: trans-animation .3s;
 }
 
 @keyframes trans-animation {
