@@ -260,6 +260,7 @@ export default {
   width: 70vw;
   box-sizing: border-box;
   border-radius: 10px;
+  animation: panel 0.5s;
 }
 
 .success-img {
@@ -287,5 +288,17 @@ export default {
 @keyframes trans-animation {
   from {transform: scale(0.9)}
   to {transform: scale(1.3)}
+}
+
+@keyframes panel {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5, 0.5);
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(1.1, 1.1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1, 1);
+  }
 }
 </style>
