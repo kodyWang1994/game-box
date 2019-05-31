@@ -212,6 +212,12 @@ export default {
   background-size: 80vw 80vw;
 }
 
+@media screen and (min-width: 468px) {
+  .game-panel .col {
+    background-size: 375px 375px;
+  }
+}
+
 .imgs-title {
   padding-left: 30px;
   font-size: 20px;
