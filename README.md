@@ -4,6 +4,14 @@
 
 https://kodywang1994.github.io/game-box/dist/index.html#/
 
+## 小程序版
+
+https://github.com/kodyWang1994/game-box-mp
+
+### 扫码体验
+
+![二维码](/src/assets/game_qrcode.png)
+
 ## Abort This Project
 ```
 这个游戏集合是我平时利用空余时间边想边写，慢慢积累出来的（还在持续更新中，后续还会有新的游戏加入）。
