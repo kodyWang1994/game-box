@@ -11,6 +11,7 @@ import Picture from '@/components/Picture'
 import NumberEliminate from '@/components/NumberEliminate'
 import Date from '@/components/DateSelect'
 import AbortUs from '@/components/AbortUs'
+import SpiderCard from '@/spiderCard/index'
 
 Vue.use(Router)
 
@@ -66,6 +67,11 @@ export default new Router({
       path: '/date',
       name: 'Date',
       component: Date
+    },
+    {
+      path: '/spider-card',
+      name: 'SpiderCard',
+      component: SpiderCard
     },
     {
       path: '/abort-us',
