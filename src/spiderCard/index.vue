@@ -11,8 +11,22 @@
           @touchstart="start($event, rowIndex, colIndex)"
           @touchmove="move($event, card)"
           @touchend="end($event, card)">
-          <div v-if="card.showCard" class="card" :class="'card-' + card.name"></div>
-          <div v-else class="card card-back"></div>
+          <template v-if="card.showCard">
+            <img v-if="card.name == 'A'" class="card" src="@/assets/cards/A.png" />
+            <img v-else-if="card.name == '2'" class="card" src="@/assets/cards/2.png" />
+            <img v-else-if="card.name == '3'" class="card" src="@/assets/cards/3.png" />
+            <img v-else-if="card.name == '4'" class="card" src="@/assets/cards/4.png" />
+            <img v-else-if="card.name == '5'" class="card" src="@/assets/cards/5.png" />
+            <img v-else-if="card.name == '6'" class="card" src="@/assets/cards/6.png" />
+            <img v-else-if="card.name == '7'" class="card" src="@/assets/cards/7.png" />
+            <img v-else-if="card.name == '8'" class="card" src="@/assets/cards/8.png" />
+            <img v-else-if="card.name == '9'" class="card" src="@/assets/cards/9.png" />
+            <img v-else-if="card.name == '10'" class="card" src="@/assets/cards/10.png" />
+            <img v-else-if="card.name == 'J'" class="card" src="@/assets/cards/J.png" />
+            <img v-else-if="card.name == 'Q'" class="card" src="@/assets/cards/Q.png" />
+            <img v-else-if="card.name == 'K'" class="card" src="@/assets/cards/K.png" />
+          </template>
+          <img v-else class="card" src="@/assets/cards/back.png" />
         </div>
       </div>
     </div>
