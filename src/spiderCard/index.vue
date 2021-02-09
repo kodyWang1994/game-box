@@ -146,7 +146,7 @@ export default {
     end (e, card) {
       let index = Math.floor((e.changedTouches[0].pageX - (window.innerWidth - 350) / 2) / 35)
       console.log(index)
-      if (card.showCard) {
+      if (card.showCard && this.moveCards.length > 0) {
         this.pushCard(index, card)
       }
     },
