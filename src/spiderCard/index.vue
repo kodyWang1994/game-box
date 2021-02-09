@@ -31,9 +31,9 @@
       </div>
     </div>
 
-    <div class="read-cards-wrap" @click="pushNewCards"><!-- 发牌区 -->
+    <div class="ready-cards-wrap" @click="pushNewCards"><!-- 发牌区 -->
       <div class="card-item" v-for="(item, index) in readyCards" :key="index">
-        <div class="card card-back"></div>
+        <img class="card" src="@/assets/cards/back.png" />
       </div>
     </div>
 
@@ -320,10 +320,10 @@ export default {
   color: #14195a;
 }
 
-.read-cards-wrap {
+.ready-cards-wrap {
   display: flex;
   position: fixed;
-  bottom: 120px;
+  bottom: 30px;
   right: 130px;
 }
 
