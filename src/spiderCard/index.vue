@@ -11,13 +11,16 @@
           @touchstart="start($event, rowIndex, colIndex)"
           @touchmove="move($event, card)"
           @touchend="end($event, card)">
-          <template v-if="card.showCard">{{card.name}}</template>
+          <div v-if="card.showCard" class="card" :class="'card-' + card.name"></div>
+          <div v-else class="card card-back"></div>
         </div>
       </div>
     </div>
 
     <div class="read-cards-wrap" @click="pushNewCards"><!-- 发牌区 -->
-      <div class="card-item" v-for="(item, index) in readyCards" :key="index"></div>
+      <div class="card-item" v-for="(item, index) in readyCards" :key="index">
+        <div class="card card-back"></div>
+      </div>
     </div>
 
     <div v-if="success" class="success-panel">
@@ -144,7 +147,7 @@ export default {
       }
     },
     end (e, card) {
-      let index = Math.floor((e.changedTouches[0].pageX - (window.innerWidth - 350) / 2) / 35)
+      let index = Math.floor((e.changedTouches[0].pageX - (window.innerWidth - 480) / 2) / 48)
       console.log(index)
       if (card.showCard && this.moveCards.length > 0) {
         this.pushCard(index, card)
@@ -279,7 +282,7 @@ export default {
   user-select: none;
 }
 .card-row {
-  width: 350px;
+  width: 480px;
   margin: auto;
   position: relative;
   display: flex;
@@ -287,19 +290,18 @@ export default {
 }
 .card-col {
   position: relative;
-  width: 32px;
+  width: 45px;
   min-height: 60px;
   background-color: #eee;
 }
 .card-item {
   position: relative;
-  width: 30px;
+  width: 43px;
   height: 60px;
   font-weight: 600;
   border: 1px solid #f1cdcd;
   border-radius: 5px;
   background-color: #fff;
-  padding: 2px;
   box-sizing: border-box;
   color: #14195a;
 }
@@ -347,5 +349,54 @@ export default {
 }
 .back {
   background-color: #aaa;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: 100% 100%;
+}
+.card-A {
+  background-image: url('/static/cards/A.png');
+}
+.card-2 {
+  background-image: url('/static/cards/2.png');
+}
+.card-3 {
+  background-image: url('/static/cards/3.png');
+}
+.card-4 {
+  background-image: url('/static/cards/4.png');
+}
+.card-5 {
+  background-image: url('/static/cards/5.png');
+}
+.card-6 {
+  background-image: url('/static/cards/6.png');
+}
+.card-7 {
+  background-image: url('/static/cards/7.png');
+}
+.card-8 {
+  background-image: url('/static/cards/8.png');
+}
+.card-9 {
+  background-image: url('/static/cards/9.png');
+}
+.card-10 {
+  background-image: url('/static/cards/10.png');
+}
+.card-J {
+  background-image: url('/static/cards/J.png');
+}
+.card-Q {
+  background-image: url('/static/cards/Q.png');
+}
+.card-K {
+  background-image: url('/static/cards/K.png');
+}
+.card-back {
+  background-image: url('/static/cards/back.png');
 }
 </style>
