@@ -26,20 +26,27 @@
             <img v-else-if="card.name == 'Q'" class="card" src="@/assets/cards/Q.png" />
             <img v-else-if="card.name == 'K'" class="card" src="@/assets/cards/K.png" />
           </template>
-          <img v-else class="card" src="@/assets/cards/back.png" />
+          <template v-else>
+            <transition name="fade" leave-active-class="flop-anim">
+              <img class="card" src="@/assets/cards/back.png" />
+            </transition>
+          </template>
         </div>
       </div>
     </div>
 
-    <div class="ready-cards-wrap" @click="pushNewCards"><!-- 发牌区 -->
+    <!-- 发牌区 -->
+    <div class="ready-cards-wrap" @click="pushNewCards">
       <div class="card-item" v-for="(item, index) in readyCards" :key="index">
-        <img class="card" src="@/assets/cards/back.png" />
+        <div v-for="(carditem, i) in item" :key="i" class="ready-card-item" :ref="'ready' + index">
+          <img class="card" src="@/assets/cards/back.png" />
+        </div>
       </div>
     </div>
 
     <div v-if="success" class="success-panel">
       <div class="success-title">恭喜！全部完成了</div>
-      <div class="restart" @click="initCard">再来一局</div>
+      <div class="restart" @click="restart">再来一局</div>
       <div class="restart back" @click="back">更多游戏</div>
     </div>
   </div>
@@ -79,6 +86,10 @@ export default {
     this.initCard()
   },
   methods: {
+    restart () {
+      this.success = false
+      this.init()
+    },
     initCard () {
       const cardsData = []
       // 共104张牌，index为 0-103
@@ -246,7 +257,33 @@ export default {
         }
       }
     },
+    // 开始播放成功收集A-K的动画
+    startSuccessAnim (rowIndex, colIndex, count) {
+      if (count > 12) {
+        this.handleDestoryCards()
+      }
+      const refs = this.$refs['' + rowIndex + (colIndex + count)]
+      if (_.isEmpty(refs)) {
+        return
+      }
+      const successCardRefs = refs[0]
+      setTimeout(() => {
+        successCardRefs.style.transition = 'all 0.3s'
+        successCardRefs.style.transform = 'scale(3)'
+        successCardRefs.style.top = (colIndex + count) * 30 + 'px'
+        successCardRefs.style.opacity = '1'
+        successCardRefs.style.position = 'fixed'
+        successCardRefs.style.top = '-130vh'
+        successCardRefs.style.opacity = '0'
+      }, 200)
+      this.startSuccessAnim(rowIndex, colIndex, count + 1)
+    },
     successA_K (rowIndex, colIndex) {
+      // TODO 销毁卡片动画有bug
+      // this.startSuccessAnim(rowIndex, colIndex, 0)
+      this.handleDestoryCards(rowIndex, colIndex)
+    },
+    handleDestoryCards (rowIndex, colIndex) {
       // 获取卡片列表
       const cards = this.contentCards[rowIndex]
       // 从列表中删除正在移动的卡片以及该卡片后的所有卡片
@@ -270,10 +307,38 @@ export default {
       }
       this.success = true
     },
+    getContentCardsHeight () {
+      let heights = []
+      for (let i in this.contentCards) {
+        heights.push(this.contentCards[i].length)
+      }
+      return heights
+    },
+    // 开始播放发牌动画
+    startAnimForPushNewCards (readyCardRefs, contentCardsHeights, refIndex) {
+      if (refIndex >= readyCardRefs.length) {
+        this.startPushNewCards()
+        return
+      }
+      const ref = readyCardRefs[refIndex]
+      setTimeout(() => {
+        ref.style.position = 'fixed'
+        ref.style.bottom = window.innerHeight - contentCardsHeights[refIndex] * 30 - 60 + 'px'
+        ref.style.left = (refIndex * 36) + ((window.innerWidth - 360) / 2) + 'px'
+        setTimeout(() => {
+          this.startAnimForPushNewCards(readyCardRefs, contentCardsHeights, refIndex + 1)
+        }, 150)
+      }, 0)
+    },
     // 发牌
     pushNewCards () {
-      const cards = this.readyCards.pop()
-      console.log(cards)
+      const readyCardRefs = this.$refs['ready' + (this.readyCards.length - 1)]
+      const contentCardsHeights = this.getContentCardsHeight()
+      this.startAnimForPushNewCards(readyCardRefs, contentCardsHeights, 0)
+    },
+    // 进行牌面替换工作
+    startPushNewCards () {
+      const cards = this.readyCards.shift()
       for (const row of this.contentCards) {
         const card = cards.pop()
         card.showCard = true
@@ -323,8 +388,16 @@ export default {
 .ready-cards-wrap {
   display: flex;
   position: fixed;
+  left: 30px;
   bottom: 30px;
-  right: 130px;
+}
+.ready-card-item {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 34px;
+  height: 60px;
+  transition: all 0.3s;
 }
 
 .success-panel {
@@ -370,6 +443,21 @@ export default {
   height: 100%;
   background-position: center;
   background-size: 100% 100%;
+  transition: all 0.5s;
+}
+.flop-anim {
+  animation: card-anim 0.5s;
+}
+@keyframes card-anim {
+  0% {
+    transform: rotateY(0) translateY(-100%) scale(1);
+  }
+  0% {
+    transform: rotateY(90deg) translateY(-100%) scale(1.5);
+  }
+  100% {
+    transform: rotateY(180deg) translateY(-100%);
+  }
 }
 .card-A {
   background-image: url('/static/cards/A.png');
