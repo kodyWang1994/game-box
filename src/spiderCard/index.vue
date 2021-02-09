@@ -161,7 +161,7 @@ export default {
       }
     },
     end (e, card) {
-      let index = Math.floor((e.changedTouches[0].pageX - (window.innerWidth - 480) / 2) / 48)
+      let index = Math.floor((e.changedTouches[0].pageX - (window.innerWidth - 360) / 2) / 36)
       console.log(index)
       if (card.showCard && this.moveCards.length > 0) {
         this.pushCard(index, card)
@@ -296,7 +296,7 @@ export default {
   user-select: none;
 }
 .card-row {
-  width: 480px;
+  width: 360px;
   margin: auto;
   position: relative;
   display: flex;
@@ -304,13 +304,13 @@ export default {
 }
 .card-col {
   position: relative;
-  width: 45px;
+  width: 35px;
   min-height: 60px;
   background-color: #eee;
 }
 .card-item {
   position: relative;
-  width: 43px;
+  width: 34px;
   height: 60px;
   font-weight: 600;
   border: 1px solid #f1cdcd;
