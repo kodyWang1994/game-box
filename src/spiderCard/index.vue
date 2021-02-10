@@ -371,11 +371,6 @@ export default {
 </script>
 
 <style scoped>
-html{
-  /* 禁止浏览器左右滑动行为 */
-  touch-action: none;
-  touch-action: pan-y;
-}
 * {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
