@@ -11,20 +11,35 @@
           @touchstart="start($event, rowIndex, colIndex)"
           @touchmove="move($event, card)"
           @touchend="end($event, card)">
-          <template v-if="card.showCard">
-            <img v-if="card.name == 'A'" class="card" src="@/assets/cards/A.png" />
-            <img v-else-if="card.name == '2'" class="card" src="@/assets/cards/2.png" />
-            <img v-else-if="card.name == '3'" class="card" src="@/assets/cards/3.png" />
-            <img v-else-if="card.name == '4'" class="card" src="@/assets/cards/4.png" />
-            <img v-else-if="card.name == '5'" class="card" src="@/assets/cards/5.png" />
-            <img v-else-if="card.name == '6'" class="card" src="@/assets/cards/6.png" />
-            <img v-else-if="card.name == '7'" class="card" src="@/assets/cards/7.png" />
-            <img v-else-if="card.name == '8'" class="card" src="@/assets/cards/8.png" />
-            <img v-else-if="card.name == '9'" class="card" src="@/assets/cards/9.png" />
-            <img v-else-if="card.name == '10'" class="card" src="@/assets/cards/10.png" />
-            <img v-else-if="card.name == 'J'" class="card" src="@/assets/cards/J.png" />
-            <img v-else-if="card.name == 'Q'" class="card" src="@/assets/cards/Q.png" />
-            <img v-else-if="card.name == 'K'" class="card" src="@/assets/cards/K.png" />
+          <template v-if="card.showCard && card.type === 'red_card'">
+            <img v-if="card.name == 'A'" class="card" src="@/assets/cards/red_cards/A.png" />
+            <img v-else-if="card.name == '2'" class="card" src="@/assets/cards/red_cards/2.png" />
+            <img v-else-if="card.name == '3'" class="card" src="@/assets/cards/red_cards/3.png" />
+            <img v-else-if="card.name == '4'" class="card" src="@/assets/cards/red_cards/4.png" />
+            <img v-else-if="card.name == '5'" class="card" src="@/assets/cards/red_cards/5.png" />
+            <img v-else-if="card.name == '6'" class="card" src="@/assets/cards/red_cards/6.png" />
+            <img v-else-if="card.name == '7'" class="card" src="@/assets/cards/red_cards/7.png" />
+            <img v-else-if="card.name == '8'" class="card" src="@/assets/cards/red_cards/8.png" />
+            <img v-else-if="card.name == '9'" class="card" src="@/assets/cards/red_cards/9.png" />
+            <img v-else-if="card.name == '10'" class="card" src="@/assets/cards/red_cards/10.png" />
+            <img v-else-if="card.name == 'J'" class="card" src="@/assets/cards/red_cards/J.png" />
+            <img v-else-if="card.name == 'Q'" class="card" src="@/assets/cards/red_cards/Q.png" />
+            <img v-else-if="card.name == 'K'" class="card" src="@/assets/cards/red_cards/K.png" />
+          </template>
+          <template v-else-if="card.showCard && card.type === 'black_card'">
+            <img v-if="card.name == 'A'" class="card" src="@/assets/cards/black_cards/A.png" />
+            <img v-else-if="card.name == '2'" class="card" src="@/assets/cards/black_cards/2.png" />
+            <img v-else-if="card.name == '3'" class="card" src="@/assets/cards/black_cards/3.png" />
+            <img v-else-if="card.name == '4'" class="card" src="@/assets/cards/black_cards/4.png" />
+            <img v-else-if="card.name == '5'" class="card" src="@/assets/cards/black_cards/5.png" />
+            <img v-else-if="card.name == '6'" class="card" src="@/assets/cards/black_cards/6.png" />
+            <img v-else-if="card.name == '7'" class="card" src="@/assets/cards/black_cards/7.png" />
+            <img v-else-if="card.name == '8'" class="card" src="@/assets/cards/black_cards/8.png" />
+            <img v-else-if="card.name == '9'" class="card" src="@/assets/cards/black_cards/9.png" />
+            <img v-else-if="card.name == '10'" class="card" src="@/assets/cards/black_cards/10.png" />
+            <img v-else-if="card.name == 'J'" class="card" src="@/assets/cards/black_cards/J.png" />
+            <img v-else-if="card.name == 'Q'" class="card" src="@/assets/cards/black_cards/Q.png" />
+            <img v-else-if="card.name == 'K'" class="card" src="@/assets/cards/black_cards/K.png" />
           </template>
           <template v-else>
             <transition name="fade" leave-active-class="flop-anim">
@@ -46,8 +61,14 @@
 
     <div v-if="success" class="success-panel">
       <div class="success-title">恭喜！全部完成了</div>
-      <div class="restart" @click="restart">再来一局</div>
+      <div class="restart" @click="openSelectLevelPanel">再来一局</div>
       <div class="restart back" @click="back">更多游戏</div>
+    </div>
+
+    <div v-if="showLevelPopup" class="success-panel">
+      <div class="success-title">请选择关卡</div>
+      <div class="restart" @click="selectLevel(0)">初级</div>
+      <div class="restart" @click="selectLevel(1)">中级</div>
     </div>
   </div>
 </template>
@@ -73,6 +94,8 @@ export default {
       cardHeight: 60,
       cardHalfHeight: 30,
       success: false,
+      showLevelPopup: true,
+      level: 0, // 难度：0,初级；1,中级
       cardsData: [ // 所有牌的数据
         'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K',
         'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K',
@@ -98,7 +121,18 @@ export default {
       this.cardHeight = this.cardWidth * 10 / 7 // 卡牌长宽比为10：7
       this.cardHalfHeight = this.cardHeight / 2
     },
+    selectLevel (level) {
+      this.level = level
+      this.restart()
+      this.showLevelPopup = false
+    },
+    openSelectLevelPanel () {
+      this.showLevelPopup = true
+      this.success = false
+    },
     restart () {
+      this.readyCards = [[], [], [], [], []]
+      this.contentCards = [[], [], [], [], [], [], [], [], [], []]
       this.success = false
       this.initCard()
     },
@@ -106,7 +140,14 @@ export default {
       const cardsData = []
       // 共104张牌，index为 0-103
       for (let i = 0; i < 104; i++) {
+        let type = 'red_card' // 红桃
+        if (this.level !== 0) {
+          if (i <= 51) {
+            type = 'black_card' // 黑桃
+          }
+        }
         cardsData.push({
+          type,
           showCard: false,
           name: this.cardsData[i]
         })
@@ -146,7 +187,7 @@ export default {
         if (i !== this.colIndex) {
           // 获取上一个卡片并比较，如果不符合规则，则清空moveCards且return
           const prevCard = this.contentCards[this.rowIndex][i - 1]
-          if (cardNameMaps[card.name] + 1 !== cardNameMaps[prevCard.name]) {
+          if (cardNameMaps[card.name] + 1 !== cardNameMaps[prevCard.name] || card.type !== prevCard.type) {
             this.moveCards = []
             return
           }
@@ -258,8 +299,8 @@ export default {
         }
         if (i !== 0) {
           const prevCard = cards[i - 1]
-          // 如果顺序不对，则return
-          if (card.name !== 'K' && cardNameMaps[card.name] + 1 !== cardNameMaps[prevCard.name]) {
+          // 如果顺序不对或不是同一个花色，则return
+          if (card.name !== 'K' && (cardNameMaps[card.name] + 1 !== cardNameMaps[prevCard.name] || card.type !== prevCard.type)) {
             return
           }
         }
@@ -294,7 +335,7 @@ export default {
       }, 0)
     },
     successA_K (rowIndex, colIndex) {
-      // TODO 销毁卡片动画有bug
+      // TODO 销毁卡片动画不完善
       this.startSuccessAnim(rowIndex, colIndex, 0)
       // this.handleDestoryCards(rowIndex, colIndex)
     },
@@ -477,47 +518,5 @@ export default {
   100% {
     transform: rotateY(180deg) translateY(-100%);
   }
-}
-.card-A {
-  background-image: url('/static/cards/A.png');
-}
-.card-2 {
-  background-image: url('/static/cards/2.png');
-}
-.card-3 {
-  background-image: url('/static/cards/3.png');
-}
-.card-4 {
-  background-image: url('/static/cards/4.png');
-}
-.card-5 {
-  background-image: url('/static/cards/5.png');
-}
-.card-6 {
-  background-image: url('/static/cards/6.png');
-}
-.card-7 {
-  background-image: url('/static/cards/7.png');
-}
-.card-8 {
-  background-image: url('/static/cards/8.png');
-}
-.card-9 {
-  background-image: url('/static/cards/9.png');
-}
-.card-10 {
-  background-image: url('/static/cards/10.png');
-}
-.card-J {
-  background-image: url('/static/cards/J.png');
-}
-.card-Q {
-  background-image: url('/static/cards/Q.png');
-}
-.card-K {
-  background-image: url('/static/cards/K.png');
-}
-.card-back {
-  background-image: url('/static/cards/back.png');
 }
 </style>
