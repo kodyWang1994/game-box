@@ -73,7 +73,7 @@
           </template>
           <template v-else>
             <transition name="fade" leave-active-class="flop-anim">
-              <img class="card" src="@/assets/cards/back.png" />
+              <img class="card" src="@/assets/cards/back_blue.png" />
             </transition>
           </template>
         </div>
@@ -84,7 +84,7 @@
     <div class="ready-cards-wrap" @click="pushNewCards">
       <div class="card-item" :style="'width:' + cardWidth + 'px;height:' + cardHeight + 'px'" v-for="(item, index) in readyCards" :key="index">
         <div v-for="(carditem, i) in item" :key="i" class="ready-card-item" :style="'width:' + cardWidth + 'px;height:' + cardHeight + 'px'" :ref="'ready' + index">
-          <img class="card" src="@/assets/cards/back.png" />
+          <img class="card" src="@/assets/cards/back_blue.png" />
         </div>
       </div>
     </div>
