@@ -283,9 +283,10 @@ export default {
         successCardRefs.style.transition = 'all 0.5s'
         successCardRefs.style.transform = 'scale(1.2)'
         successCardRefs.style.top = 0
-        successCardRefs.style.left = '90vw'
+        successCardRefs.style.left = 0
         successCardRefs.style.position = 'fixed'
         successCardRefs.style.top = '100vh'
+        successCardRefs.style.left = '90vw'
         setTimeout(() => {
           this.startSuccessAnim(rowIndex, colIndex, count + 1)
         }, 150)
@@ -357,6 +358,10 @@ export default {
         card.showCard = true
         row.push(card)
       }
+      // 发完牌后开始检查是否成功集齐
+      for (let i = 0; i < this.contentCards.length; i++) {
+        this.checkSuccess(i)
+      }
     },
     back () {
       this.$router.push('/')
@@ -366,6 +371,11 @@ export default {
 </script>
 
 <style scoped>
+html{
+  /* 禁止浏览器左右滑动行为 */
+  touch-action: none;
+  touch-action: pan-y;
+}
 * {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
