@@ -145,10 +145,13 @@ export default {
   created () {
     this.getCardSize()
     this.initCard()
+    document.body.onresize = this.getCardSize
   },
   methods: {
     getCardSize () {
-      this.contentWidth = window.innerWidth - (this.padding * 2)
+      console.log('getCardSize')
+      this.contentWidth = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth - (20 * 2)
+      this.padding = (window.innerWidth - this.contentWidth) / 2
       this.cardWidth = this.contentWidth / 10 - 2
       this.cardHeight = this.cardWidth * 10 / 7 // 卡牌长宽比为10：7
       this.cardHalfHeight = this.cardHeight / 2
