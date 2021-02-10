@@ -67,6 +67,7 @@ export default {
   },
   data () {
     return {
+      padding: 20, // content据左右距离
       contentWidth: 360,
       cardWidth: 35,
       cardHeight: 60,
@@ -92,7 +93,7 @@ export default {
   },
   methods: {
     getCardSize () {
-      this.contentWidth = window.innerWidth - 10
+      this.contentWidth = window.innerWidth - (this.padding * 2)
       this.cardWidth = this.contentWidth / 10 - 2
       this.cardHeight = this.cardWidth * 10 / 7 // 卡牌长宽比为10：7
       this.cardHalfHeight = this.cardHeight / 2
@@ -183,7 +184,7 @@ export default {
       }
     },
     end (e, card) {
-      let index = Math.floor((e.changedTouches[0].pageX - 5) / (this.contentWidth / 10))
+      let index = Math.floor((e.changedTouches[0].pageX - this.padding) / (this.contentWidth / 10))
       console.log(index)
       if (card.showCard && this.moveCards.length > 0) {
         this.pushCard(index, card)
@@ -338,7 +339,7 @@ export default {
       setTimeout(() => {
         ref.style.position = 'fixed'
         ref.style.bottom = window.innerHeight - (contentCardsHeights[refIndex] * this.cardHalfHeight) - this.cardHeight + 'px'
-        ref.style.left = (refIndex * (this.contentWidth / 10)) + 5 + 'px'
+        ref.style.left = (refIndex * (this.contentWidth / 10)) + this.padding + 'px'
         setTimeout(() => {
           this.startAnimForPushNewCards(readyCardRefs, contentCardsHeights, refIndex + 1)
         }, 150)
