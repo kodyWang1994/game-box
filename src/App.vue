@@ -11,11 +11,6 @@ export default {
 </script>
 
 <style>
-html{
-  /* 禁止浏览器左右滑动行为 */
-  touch-action: none;
-  touch-action: pan-y;
-}
 body {
   margin: 0;
 }
