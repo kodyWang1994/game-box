@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="card-row">
-      <div class="card-col" v-for="(cardList, rowIndex) in contentCards" :key="rowIndex">
+    <div class="card-row" :style="'width:' + contentWidth + 'px'">
+      <div class="card-col" :style="'width:' + cardWidth + 'px'" v-for="(cardList, rowIndex) in contentCards" :key="rowIndex">
         <div
           :ref="'' + rowIndex + colIndex"
           class="card-item"
-          :style="'top: -' + colIndex * 30 + 'px'"
+          :style="'top: -' + colIndex * cardHalfHeight + 'px;width:' + cardWidth + 'px;height:' + cardHeight + 'px'"
           v-for="(card, colIndex) in cardList"
           :key="colIndex"
           @touchstart="start($event, rowIndex, colIndex)"
@@ -37,8 +37,8 @@
 
     <!-- 发牌区 -->
     <div class="ready-cards-wrap" @click="pushNewCards">
-      <div class="card-item" v-for="(item, index) in readyCards" :key="index">
-        <div v-for="(carditem, i) in item" :key="i" class="ready-card-item" :ref="'ready' + index">
+      <div class="card-item" :style="'width:' + cardWidth + 'px;height:' + cardHeight + 'px'" v-for="(item, index) in readyCards" :key="index">
+        <div v-for="(carditem, i) in item" :key="i" class="ready-card-item" :style="'width:' + cardWidth + 'px;height:' + cardHeight + 'px'" :ref="'ready' + index">
           <img class="card" src="@/assets/cards/back.png" />
         </div>
       </div>
@@ -67,6 +67,10 @@ export default {
   },
   data () {
     return {
+      contentWidth: 360,
+      cardWidth: 35,
+      cardHeight: 60,
+      cardHalfHeight: 30,
       success: false,
       cardsData: [ // 所有牌的数据
         'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K',
@@ -83,12 +87,19 @@ export default {
     }
   },
   created () {
+    this.getCardSize()
     this.initCard()
   },
   methods: {
+    getCardSize () {
+      this.contentWidth = window.innerWidth - 10
+      this.cardWidth = this.contentWidth / 10 - 2
+      this.cardHeight = this.cardWidth * 10 / 7 // 卡牌长宽比为10：7
+      this.cardHalfHeight = this.cardHeight / 2
+    },
     restart () {
       this.success = false
-      this.init()
+      this.initCard()
     },
     initCard () {
       const cardsData = []
@@ -162,17 +173,17 @@ export default {
           return
         }
         for (let i in this.moveCards) {
-          let cardPosition = cardsCount > 1 ? ((cardsCount - 1) * 30 - 30) : -30
+          let cardPosition = cardsCount > 1 ? ((cardsCount - 1) * this.cardHalfHeight - this.cardHalfHeight) : -this.cardHalfHeight
           const moveCard = this.moveCards[i]
           moveCard.card.style.position = 'fixed'
-          moveCard.card.style.top = (e.touches[0].pageY + cardPosition) - (i * 30) + 'px'
+          moveCard.card.style.top = (e.touches[0].pageY + cardPosition) - (i * this.cardHalfHeight) + 'px'
           moveCard.card.style.left = e.touches[0].pageX - 15 + 'px'
           moveCard.card.style.zIndex = 100
         }
       }
     },
     end (e, card) {
-      let index = Math.floor((e.changedTouches[0].pageX - (window.innerWidth - 360) / 2) / 36)
+      let index = Math.floor((e.changedTouches[0].pageX - 5) / (this.contentWidth / 10))
       console.log(index)
       if (card.showCard && this.moveCards.length > 0) {
         this.pushCard(index, card)
@@ -224,7 +235,7 @@ export default {
       }
       for (const moveCard of this.moveCards) {
         moveCard.card.style.position = 'relative'
-        moveCard.card.style.top = '-' + moveCard.colIndex * 30 + 'px'
+        moveCard.card.style.top = '-' + moveCard.colIndex * this.cardHalfHeight + 'px'
         moveCard.card.style.left = 'unset'
         moveCard.card.style.zIndex = 'unset'
       }
@@ -260,7 +271,8 @@ export default {
     // 开始播放成功收集A-K的动画
     startSuccessAnim (rowIndex, colIndex, count) {
       if (count > 12) {
-        this.handleDestoryCards()
+        this.handleDestoryCards(rowIndex, colIndex)
+        return
       }
       const refs = this.$refs['' + rowIndex + (colIndex + count)]
       if (_.isEmpty(refs)) {
@@ -268,20 +280,21 @@ export default {
       }
       const successCardRefs = refs[0]
       setTimeout(() => {
-        successCardRefs.style.transition = 'all 0.3s'
-        successCardRefs.style.transform = 'scale(3)'
-        successCardRefs.style.top = (colIndex + count) * 30 + 'px'
-        successCardRefs.style.opacity = '1'
+        successCardRefs.style.transition = 'all 0.5s'
+        successCardRefs.style.transform = 'scale(1.2)'
+        successCardRefs.style.top = 0
+        successCardRefs.style.left = '90vw'
         successCardRefs.style.position = 'fixed'
-        successCardRefs.style.top = '-130vh'
-        successCardRefs.style.opacity = '0'
-      }, 200)
-      this.startSuccessAnim(rowIndex, colIndex, count + 1)
+        successCardRefs.style.top = '100vh'
+        setTimeout(() => {
+          this.startSuccessAnim(rowIndex, colIndex, count + 1)
+        }, 150)
+      }, 0)
     },
     successA_K (rowIndex, colIndex) {
       // TODO 销毁卡片动画有bug
-      // this.startSuccessAnim(rowIndex, colIndex, 0)
-      this.handleDestoryCards(rowIndex, colIndex)
+      this.startSuccessAnim(rowIndex, colIndex, 0)
+      // this.handleDestoryCards(rowIndex, colIndex)
     },
     handleDestoryCards (rowIndex, colIndex) {
       // 获取卡片列表
@@ -323,8 +336,8 @@ export default {
       const ref = readyCardRefs[refIndex]
       setTimeout(() => {
         ref.style.position = 'fixed'
-        ref.style.bottom = window.innerHeight - contentCardsHeights[refIndex] * 30 - 60 + 'px'
-        ref.style.left = (refIndex * 36) + ((window.innerWidth - 360) / 2) + 'px'
+        ref.style.bottom = window.innerHeight - (contentCardsHeights[refIndex] * this.cardHalfHeight) - this.cardHeight + 'px'
+        ref.style.left = (refIndex * (this.contentWidth / 10)) + 5 + 'px'
         setTimeout(() => {
           this.startAnimForPushNewCards(readyCardRefs, contentCardsHeights, refIndex + 1)
         }, 150)
