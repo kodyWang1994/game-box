@@ -41,6 +41,36 @@
             <img v-else-if="card.name == 'Q'" class="card" src="@/assets/cards/black_cards/Q.png" />
             <img v-else-if="card.name == 'K'" class="card" src="@/assets/cards/black_cards/K.png" />
           </template>
+          <template v-else-if="card.showCard && card.type === 'diamond_card'">
+            <img v-if="card.name == 'A'" class="card" src="@/assets/cards/diamond_cards/A.png" />
+            <img v-else-if="card.name == '2'" class="card" src="@/assets/cards/diamond_cards/2.png" />
+            <img v-else-if="card.name == '3'" class="card" src="@/assets/cards/diamond_cards/3.png" />
+            <img v-else-if="card.name == '4'" class="card" src="@/assets/cards/diamond_cards/4.png" />
+            <img v-else-if="card.name == '5'" class="card" src="@/assets/cards/diamond_cards/5.png" />
+            <img v-else-if="card.name == '6'" class="card" src="@/assets/cards/diamond_cards/6.png" />
+            <img v-else-if="card.name == '7'" class="card" src="@/assets/cards/diamond_cards/7.png" />
+            <img v-else-if="card.name == '8'" class="card" src="@/assets/cards/diamond_cards/8.png" />
+            <img v-else-if="card.name == '9'" class="card" src="@/assets/cards/diamond_cards/9.png" />
+            <img v-else-if="card.name == '10'" class="card" src="@/assets/cards/diamond_cards/10.png" />
+            <img v-else-if="card.name == 'J'" class="card" src="@/assets/cards/diamond_cards/J.png" />
+            <img v-else-if="card.name == 'Q'" class="card" src="@/assets/cards/diamond_cards/Q.png" />
+            <img v-else-if="card.name == 'K'" class="card" src="@/assets/cards/diamond_cards/K.png" />
+          </template>
+          <template v-else-if="card.showCard && card.type === 'club_card'">
+            <img v-if="card.name == 'A'" class="card" src="@/assets/cards/club_cards/A.png" />
+            <img v-else-if="card.name == '2'" class="card" src="@/assets/cards/club_cards/2.png" />
+            <img v-else-if="card.name == '3'" class="card" src="@/assets/cards/club_cards/3.png" />
+            <img v-else-if="card.name == '4'" class="card" src="@/assets/cards/club_cards/4.png" />
+            <img v-else-if="card.name == '5'" class="card" src="@/assets/cards/club_cards/5.png" />
+            <img v-else-if="card.name == '6'" class="card" src="@/assets/cards/club_cards/6.png" />
+            <img v-else-if="card.name == '7'" class="card" src="@/assets/cards/club_cards/7.png" />
+            <img v-else-if="card.name == '8'" class="card" src="@/assets/cards/club_cards/8.png" />
+            <img v-else-if="card.name == '9'" class="card" src="@/assets/cards/club_cards/9.png" />
+            <img v-else-if="card.name == '10'" class="card" src="@/assets/cards/club_cards/10.png" />
+            <img v-else-if="card.name == 'J'" class="card" src="@/assets/cards/club_cards/J.png" />
+            <img v-else-if="card.name == 'Q'" class="card" src="@/assets/cards/club_cards/Q.png" />
+            <img v-else-if="card.name == 'K'" class="card" src="@/assets/cards/club_cards/K.png" />
+          </template>
           <template v-else>
             <transition name="fade" leave-active-class="flop-anim">
               <img class="card" src="@/assets/cards/back.png" />
@@ -69,6 +99,8 @@
       <div class="success-title">请选择关卡</div>
       <div class="restart" @click="selectLevel(0)">初级</div>
       <div class="restart" @click="selectLevel(1)">中级</div>
+      <div class="restart" @click="selectLevel(2)">高级</div>
+      <div class="restart" @click="selectLevel(3)">大师</div>
     </div>
   </div>
 </template>
@@ -142,8 +174,33 @@ export default {
       for (let i = 0; i < 104; i++) {
         let type = 'red_card' // 红桃
         if (this.level !== 0) {
-          if (i <= 51) {
-            type = 'black_card' // 黑桃
+          switch (this.level) {
+            case 0:
+              type = 'red_card' // 红桃
+              break
+            case 1:
+              if (i <= 51) {
+                type = 'black_card' // 黑桃
+              }
+              break
+            case 2:
+              if (i <= 25) {
+                type = 'black_card' // 黑桃
+              } else if (i <= 51) {
+                type = 'club_card' // 梅花
+              }
+              break
+            case 3:
+              if (i <= 25) {
+                type = 'black_card' // 黑桃
+              } else if (i <= 51) {
+                type = 'diamond_card' // 方块
+              } else if (i <= 77) {
+                type = 'club_card' // 梅花
+              }
+              break
+            default:
+              break
           }
         }
         cardsData.push({
