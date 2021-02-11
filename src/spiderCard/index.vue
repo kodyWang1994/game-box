@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="card-container">
     <div class="card-row" :style="'width:' + contentWidth + 'px'">
       <div class="card-col" :style="'width:' + cardWidth + 'px'" v-for="(cardList, rowIndex) in contentCards" :key="rowIndex">
         <div
@@ -32,7 +32,7 @@
 
     <div class="A-K-anim-panel" v-show="successAnimCards.length > 0">
       <div class="A-K-anim-wrap">
-        <div v-for="(card, index) in successAnimCards" :key="index" class="card-item"
+        <div v-for="(card, index) in successAnimCards" :key="index" class="card-item A-K-anim-card-item"
           :style="'width:' + cardWidth + 'px;height:' + cardHeight + 'px'"
           :ref="'anim' + index">
           <card :card="card"></card>
@@ -366,7 +366,8 @@ export default {
       // 获取卡片列表
       const cards = this.contentCards[rowIndex]
       const animCards = JSON.parse(JSON.stringify(cards))
-      this.successAnimCards = animCards
+      const successCards = animCards.splice(colIndex, animCards.length - colIndex)
+      this.successAnimCards = successCards
       setTimeout(() => {
         this.startSuccessAnim(0)
       }, 200)
@@ -485,26 +486,32 @@ export default {
   -ms-user-select: none;
   user-select: none;
 }
+.card-container {
+  background-color: rgba(169, 179, 189, 60%);
+  min-height: 100vh;
+}
 .card-row {
   width: 360px;
   margin: auto;
   position: relative;
   display: flex;
   justify-content: space-around;
+  /* background-color: #f6f6f6; */
 }
 .card-col {
   position: relative;
   width: 35px;
-  min-height: 60px;
-  background-color: #eee;
+  min-height: 80vh;
+  background-color: #fff;
+}
+.card-col:nth-child(2n) {
+  background-color: #f2f2f2;
 }
 .card-item {
   position: relative;
   width: 34px;
   height: 60px;
   font-weight: 600;
-  border: 1px solid #f1cdcd;
-  border-radius: 5px;
   background-color: #fff;
   box-sizing: border-box;
   color: #14195a;
@@ -628,5 +635,8 @@ export default {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+}
+.A-K-anim-card-item {
+  background-color: transparent !important;
 }
 </style>

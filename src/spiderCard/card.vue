@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="card-box">
     <template v-if="card.showCard && card.type === 'red_card'">
       <img v-if="card.name == 'A'" class="card" src="@/assets/cards/red_cards/A.png" />
       <img v-else-if="card.name == '2'" class="card" src="@/assets/cards/red_cards/2.png" />
@@ -80,6 +80,11 @@ export default {
 </script>
 
 <style scoped>
+.card-box {
+  width: 100%;
+  height: 100%;
+}
+
 .card {
   width: 100%;
   height: 100%;
