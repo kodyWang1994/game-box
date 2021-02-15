@@ -10,7 +10,9 @@
           :key="colIndex"
           @touchstart="start($event, rowIndex, colIndex)"
           @touchmove="move($event, card)"
-          @touchend="end($event, card)">
+          @touchend="end($event, card)"
+          @mousedown="mouseStart($event, rowIndex, colIndex, card)"
+          @mouseup="mouseEnd($event, card)">
           <card :card="card"></card>
         </div>
       </div>
@@ -246,6 +248,41 @@ export default {
       console.log(index)
       if (card.showCard && this.moveCards.length > 0) {
         this.pushCard(index, card)
+      }
+    },
+    mouseStart (e, rowIndex, colIndex, card) {
+      console.log('Start', e)
+      this.rowIndex = rowIndex
+      this.colIndex = colIndex
+      this.getAllNeedMoveCards()
+      this.mouseMoveCard = card
+      document.addEventListener('mousemove', this.mouseMove)
+    },
+    mouseMove (e) {
+      console.log('move')
+      e.preventDefault()
+      if (this.mouseMoveCard.showCard) {
+        const cardsCount = this.moveCards.length
+        if (!cardsCount) {
+          return
+        }
+        for (let i in this.moveCards) {
+          let cardPosition = cardsCount > 1 ? ((cardsCount - 1) * this.cardHalfHeight - this.cardHalfHeight) : -this.cardHalfHeight
+          const moveCard = this.moveCards[i]
+          moveCard.card.style.position = 'fixed'
+          moveCard.card.style.top = (e.pageY + cardPosition) - (i * this.cardHalfHeight) + 'px'
+          moveCard.card.style.left = e.pageX - 15 + 'px'
+          moveCard.card.style.zIndex = 100
+        }
+      }
+    },
+    mouseEnd (e, card) {
+      console.log('end', e, card, this.mouseMoveCard)
+      document.removeEventListener('mousemove', this.mouseMove)
+      let index = Math.floor((e.pageX - this.padding) / (this.contentWidth / 10))
+      console.log(index)
+      if (this.mouseMoveCard.showCard && this.moveCards.length > 0) {
+        this.pushCard(index, this.mouseMoveCard)
       }
     },
     pushCard (index, card) {
