@@ -4,6 +4,9 @@
 `推荐手机模式`
 https://kodywang1994.github.io/game-box/dist/index.html#/
 
+`中国象棋`
+https://kodywang1994.github.io/chinese-chess/dist/index.html
+
 ## 小程序版
 
 https://github.com/kodyWang1994/game-box-mp
