@@ -2,7 +2,7 @@
   <div class="container">
     <div class="game-panel">
       <div class="row" v-for="row in 10" :key="row + 'row'">
-        <div class="col" v-for="col in 10" :key="col + 'col'" :class="{red: hasColor(row * 10 +  col - 1)}"></div>
+        <div class="col" v-for="col in 10" :key="col + 'col'" :class="{active: hasColor(row * 10 +  col - 1)}"></div>
       </div>
     </div>
 
@@ -16,13 +16,13 @@
         @touchmove="move"
         @touchend="end">
         <div class="row" v-for="row in 5" :key="row + 'drag-row'">
-          <div class="col white" v-for="col in 5" :key="col + 'drag-col'" :class="{red: dragHasColor(row * 10 +  col - 1)}"></div>
+          <div class="col white" v-for="col in 5" :key="col + 'drag-col'" :class="{active: dragHasColor(row * 10 + col - 1)}"></div>
         </div>
       </div>
     </div>
 
     <div v-show="isOver" class="over-panel">
-      <div class="over-text">无处可放</div>
+      <div class="over-text">无处安放</div>
       <div>最终得分： {{source}}</div>
       <span @click="restart" class="restart">重新开始</span>
     </div>
@@ -47,7 +47,7 @@ export default {
     }
   },
   created () {
-    console.warn('Design by Kody Wang, Thank you, play my game!')
+    console.warn('Design by Kody Wang, enjoy my game! Thank you!')
     this.changeDragBlock()
   },
   methods: {
@@ -260,7 +260,7 @@ export default {
   border: 1px solid #fff;
 }
 
-.red {
+.active {
   background-color: #FFC125 !important;
   border: 1px solid #fff !important;
 }

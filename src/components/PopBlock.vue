@@ -5,9 +5,13 @@
       <div>第{{ step }}关</div>
       <div>目标分数： {{targetSource}}</div>
       <div>当前分数： {{currentSource}}</div>
-      <div class="tip" v-if="showTip">消除{{clearCount}}个，获得{{source}}分</div>
-      <div class="tip" v-show="showStepOverTip">剩余{{lessCount}}个，奖励{{stepOverSource}}分</div>
+      <div class="tip font-20 padding-top-6" v-if="showTip">消除{{clearCount}}个，获得{{source}}分</div>
     </div>
+
+    <div class="mask" v-show="showStepOverTip">
+      <div class="white font-22">剩余{{lessCount}}个，奖励{{stepOverSource}}分</div>
+    </div>
+
     <div v-if="over" class="game-over">
       <div class="over-text">游戏结束</div>
       <div class="restart" @click="restartGame">重新开始</div>
@@ -65,14 +69,12 @@ export default {
       let index = parseInt(y + '' + x)
       if (_.has(this.blockColors, index)) {
         this.getNeedCleanBlock(index, [index])
-        setTimeout(() => {
-          if (this.needCleanBlock.length >= 2) {
-            let audio = new Audio()
-            audio.src = 'http://data.huiyi8.com/2017/gha/03/17/1702.mp3'
-            audio.play()
-            this.clean(this.needCleanBlock)
-          }
-        }, 300)
+        if (this.needCleanBlock.length >= 2) {
+          let audio = new Audio()
+          audio.src = 'http://data.huiyi8.com/2017/gha/03/17/1702.mp3'
+          audio.play()
+          this.clean(this.needCleanBlock)
+        }
       }
     },
     clean (needCleanBlock) {
@@ -211,30 +213,22 @@ export default {
       if (parseInt((index + 1) / 10) === parseInt(index / 10) && _.indexOf(needCleanBlock, index + 1) === -1 && color === this.blockColors[index + 1]) {
         hasNeedClearBlock = true
         needCleanBlock.push(index + 1)
-        setTimeout(() => {
-          this.getNeedCleanBlock(index + 1, needCleanBlock)
-        }, 0)
+        this.getNeedCleanBlock(index + 1, needCleanBlock)
       }
       if (parseInt((index - 1) / 10) === parseInt(index / 10) && _.indexOf(needCleanBlock, index - 1) === -1 && color === this.blockColors[index - 1]) {
         hasNeedClearBlock = true
         needCleanBlock.push(index - 1)
-        setTimeout(() => {
-          this.getNeedCleanBlock(index - 1, needCleanBlock)
-        }, 0)
+        this.getNeedCleanBlock(index - 1, needCleanBlock)
       }
       if (_.indexOf(needCleanBlock, index + 10) === -1 && color === this.blockColors[index + 10]) {
         hasNeedClearBlock = true
         needCleanBlock.push(index + 10)
-        setTimeout(() => {
-          this.getNeedCleanBlock(index + 10, needCleanBlock)
-        }, 0)
+        this.getNeedCleanBlock(index + 10, needCleanBlock)
       }
       if (_.indexOf(needCleanBlock, index - 10) === -1 && color === this.blockColors[index - 10]) {
         hasNeedClearBlock = true
         needCleanBlock.push(index - 10)
-        setTimeout(() => {
-          this.getNeedCleanBlock(index - 10, needCleanBlock)
-        }, 0)
+        this.getNeedCleanBlock(index - 10, needCleanBlock)
       }
       if (!hasNeedClearBlock) {
         this.needCleanBlock = needCleanBlock
@@ -293,6 +287,7 @@ export default {
   overflow: hidden;
 }
 
+.mask,
 .game-over {
   position: fixed;
   top: 0;
@@ -300,6 +295,13 @@ export default {
   right: 0;
   bottom: 0;
   text-align: center;
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.mask {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .game-panel {
@@ -312,6 +314,22 @@ export default {
 
 .tip {
   color: tomato;
+}
+
+.white {
+  color: #fff;
+}
+
+.font-20 {
+  font-size: 20px;
+}
+
+.font-22 {
+  font-size: 22px;
+}
+
+.padding-top-6 {
+  padding-top: 6px;
 }
 
 .over-text {
