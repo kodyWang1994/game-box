@@ -8,11 +8,11 @@
           :style="'top: -' + colIndex * cardHalfHeight + 'px;width:' + cardWidth + 'px;height:' + cardHeight + 'px'"
           v-for="(card, colIndex) in cardList"
           :key="colIndex"
-          @touchstart="start($event, rowIndex, colIndex)"
-          @touchmove="move($event, card)"
-          @touchend="end($event, card)"
-          @mousedown="mouseStart($event, rowIndex, colIndex, card)"
-          @mouseup="mouseEnd($event, card)">
+          @touchstart.stop="start($event, rowIndex, colIndex)"
+          @touchmove.stop="move($event, card)"
+          @touchend.stop="end($event, card)"
+          @mousedown.stop="mouseStart($event, rowIndex, colIndex, card)"
+          @mouseup.stop="mouseEnd($event, card)">
           <card :card="card"></card>
         </div>
       </div>
@@ -28,8 +28,11 @@
     </div>
 
     <div class="option-btns">
-      <div class="step">操作：{{this.stepMaps.length ? this.stepMaps.length - 1 : 0}} </div>
-      <div class="back-step-btn" @click="backPrevStep">撤销</div>
+      <div class="step">操作：{{stepMaps.length ? stepMaps.length - 1 : 0}} </div>
+      <div class="flex">
+        <div class="back-step-btn" @click="showLevelPopup = true">关卡</div>
+        <div class="back-step-btn" @click="backPrevStep">撤销</div>
+      </div>
     </div>
 
     <div class="A-K-anim-panel" v-show="successAnimCards.length > 0">
@@ -48,12 +51,12 @@
       <div class="restart back" @click="back">更多游戏</div>
     </div>
 
-    <div v-if="showLevelPopup" class="success-panel">
+    <div v-if="showLevelPopup" class="success-panel" @click="showLevelPopup = false">
       <div class="success-title">请选择关卡</div>
-      <div class="restart" @click="selectLevel(0)">初级</div>
-      <div class="restart" @click="selectLevel(1)">中级</div>
-      <div class="restart" @click="selectLevel(2)">高级</div>
-      <div class="restart" @click="selectLevel(3)">大师</div>
+      <div class="restart" @click.stop="selectLevel(0)">初级</div>
+      <div class="restart" @click.stop="selectLevel(1)">中级</div>
+      <div class="restart" @click.stop="selectLevel(2)">高级</div>
+      <div class="restart" @click.stop="selectLevel(3)">大师</div>
     </div>
   </div>
 </template>
@@ -633,7 +636,7 @@ export default {
   justify-content: center;
   flex-direction: column;
   position: fixed;
-  right: 30px;
+  right: 15px;
   bottom: 30px;
 }
 .option-btns .step {
@@ -642,6 +645,7 @@ export default {
   font-weight: 500;
 }
 .option-btns .back-step-btn {
+  margin-left: 6px;
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -652,6 +656,9 @@ export default {
   align-items: center;
   justify-content: center;
   border-radius: 30px;
+}
+.flex {
+  display: flex;
 }
 
 .A-K-anim-panel {
