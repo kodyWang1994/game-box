@@ -10,6 +10,7 @@
       <a href="index.html#/snake" class="menu-item">贪吃蛇</a>
       <a href="index.html#/eliminate" class="menu-item">消消乐</a>
       <div @click="gotoChineseChess" class="menu-item">中国象棋</div>
+      <a href="index.html#/mine-sweeping" class="menu-item">扫雷</a>
       <a href="index.html#/spider-card" class="menu-item">蜘蛛卡牌</a>
       <a href="index.html#/pop-block" class="menu-item">消灭方块</a>
       <a href="index.html#/drag-block" class="menu-item">拖动方块</a>

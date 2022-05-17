@@ -12,11 +12,24 @@
       <div
         class="drag-wrap"
         ref="moveBlock"
-        @touchstart="start"
+        @touchstart="start($event, '')"
         @touchmove="move"
-        @touchend="end">
+        @touchend="end($event, 0)">
         <div class="row" v-for="row in 5" :key="row + 'drag-row'">
           <div class="col white" v-for="col in 5" :key="col + 'drag-col'" :class="{active: dragHasColor(row * 10 + col - 1)}"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-panel move-panel">
+      <div
+        class="drag-wrap"
+        ref="moveBlock1"
+        @touchstart="start($event, '1')"
+        @touchmove="move"
+        @touchend="end($event, 1)">
+        <div class="row" v-for="row in 5" :key="row + 'drag-row'">
+          <div class="col white" v-for="col in 5" :key="col + 'drag-col'" :class="{active: dragHasColor1(row * 10 + col - 1)}"></div>
         </div>
       </div>
     </div>
@@ -32,13 +45,31 @@
 <script>
 import _ from 'underscore'
 
+function getType () {
+  return _.sample([
+    'row-line',
+    'col-line',
+    'square',
+    'square-bend-top-left',
+    'square-bend-top-right',
+    'square-bend-bottom-left',
+    'square-bend-bottom-right'
+  ])
+}
+
 export default {
   name: 'DragBlock',
   data () {
     return {
       blockColor: [],
       dragColor: [],
+      dragColor1: [],
+      dragColor2: [],
       dragBlock: {
+        size: 2,
+        type: 'square'
+      },
+      dragBlock1: {
         size: 2,
         type: 'square'
       },
@@ -63,29 +94,35 @@ export default {
     dragHasColor (index) {
       return _.indexOf(this.dragColor, index) > -1
     },
-    changeDragBlock () {
-      this.dragColor = []
-      this.dragBlock.type = _.sample([
-        'row-line',
-        'col-line',
-        'square',
-        'square-bend-top-left',
-        'square-bend-top-right',
-        'square-bend-bottom-left',
-        'square-bend-bottom-right'
-      ])
-      if (this.dragBlock.type.indexOf('line') > -1) {
-        this.dragBlock.size = _.random(1, 5)
-      } else {
-        this.dragBlock.size = _.random(2, 3)
+    dragHasColor1 (index) {
+      return _.indexOf(this.dragColor1, index) > -1
+    },
+    changeDragBlock (type) {
+      if (typeof type === 'undefined' || type === 0) {
+        this.dragColor = []
+        this.dragBlock.type = getType()
+        if (this.dragBlock.type.indexOf('line') > -1) {
+          this.dragBlock.size = _.random(1, 5)
+        } else {
+          this.dragBlock.size = _.random(2, 3)
+        }
+        this.dragColor = this.getIndexs(this.dragBlock, 10)
       }
-
-      this.dragColor = this.getIndexs([], 10)
+      if (typeof type === 'undefined' || type === 1) {
+        this.dragColor1 = []
+        this.dragBlock1.type = getType()
+        if (this.dragBlock1.type.indexOf('line') > -1) {
+          this.dragBlock1.size = _.random(1, 5)
+        } else {
+          this.dragBlock1.size = _.random(2, 3)
+        }
+        this.dragColor1 = this.getIndexs(this.dragBlock1, 10)
+      }
 
       this.checkIsOver()
     },
-    start (e) {
-      this.moveBlock = this.$refs.moveBlock
+    start (e, type) {
+      this.moveBlock = this.$refs['moveBlock' + type]
     },
     move (e) {
       e.preventDefault()
@@ -93,15 +130,16 @@ export default {
       this.moveBlock.style.top = e.touches[0].pageY - 60 + 'px'
       this.moveBlock.style.left = e.touches[0].pageX - 30 + 'px'
     },
-    end (e) {
+    end (e, type) {
       let x = Math.round((e.changedTouches[0].pageX - (window.innerWidth - 320) / 2) / 32)
       let y = Math.round((e.changedTouches[0].pageY) / 32) * 10
       let index = y + x - 1 - 10
-      this.pushBlock(index)
+      this.pushBlock(index, type)
       this.moveBlock.style.position = 'static'
     },
-    pushBlock (num) {
-      let indexs = this.getIndexs([], num)
+    pushBlock (num, type) {
+      let dragBlock = type === 0 ? this.dragBlock : (type === 1 ? this.dragBlock1 : this.dragBlock2)
+      let indexs = this.getIndexs(dragBlock, num)
       let canPush = true
 
       if (!_.isEmpty(indexs)) {
@@ -116,7 +154,7 @@ export default {
           }
           this.source += indexs.length
           this.checkIsLine()
-          this.changeDragBlock()
+          this.changeDragBlock(type)
         }
       }
     },
@@ -145,12 +183,23 @@ export default {
       let blankIndexs = _.difference(allIndexs, this.blockColor)
       for (const index of blankIndexs) {
         let canPush = true
-        let indexs = this.getIndexs([], index)
+        let indexs = this.getIndexs(this.dragBlock, index)
+        let indexs1 = this.getIndexs(this.dragBlock1, index)
 
         if (_.isEmpty(indexs)) {
           canPush = false
         } else {
           for (const index of indexs) {
+            if (this.hasColor(index) || index < 10 || index > 109) {
+              canPush = false
+            }
+          }
+        }
+
+        if (_.isEmpty(indexs1)) {
+          canPush = false
+        } else {
+          for (const index of indexs1) {
             if (this.hasColor(index) || index < 10 || index > 109) {
               canPush = false
             }
@@ -162,9 +211,10 @@ export default {
       }
       this.isOver = true
     },
-    getIndexs (indexs, num) {
-      if (this.dragBlock.type === 'row-line') {
-        for (let i = 0; i < this.dragBlock.size; i++) {
+    getIndexs (dragBlock, num) {
+      let indexs = []
+      if (dragBlock.type === 'row-line') {
+        for (let i = 0; i < dragBlock.size; i++) {
           if (parseInt((num + i) / 10) !== parseInt((num) / 10)) {
             return []
           }
@@ -172,59 +222,59 @@ export default {
         }
       }
 
-      if (this.dragBlock.type === 'col-line') {
-        for (let i = 0; i < this.dragBlock.size * 10; i += 10) {
+      if (dragBlock.type === 'col-line') {
+        for (let i = 0; i < dragBlock.size * 10; i += 10) {
           indexs.push(num + i)
         }
       }
 
-      if (this.dragBlock.type.indexOf('square') > -1) {
-        if (10 - (num % 10) < this.dragBlock.size) {
+      if (dragBlock.type.indexOf('square') > -1) {
+        if (10 - (num % 10) < dragBlock.size) {
           return []
         }
       }
 
-      if (this.dragBlock.type === 'square') {
-        for (let i = 0; i < this.dragBlock.size * 10; i += 10) {
-          for (let j = 0; j < this.dragBlock.size; j++) {
+      if (dragBlock.type === 'square') {
+        for (let i = 0; i < dragBlock.size * 10; i += 10) {
+          for (let j = 0; j < dragBlock.size; j++) {
             indexs.push(num + i + j)
           }
         }
       }
 
-      if (this.dragBlock.type === 'square-bend-top-left') {
-        for (let i = 0; i < this.dragBlock.size; i++) {
+      if (dragBlock.type === 'square-bend-top-left') {
+        for (let i = 0; i < dragBlock.size; i++) {
           indexs.push(num + i)
         }
-        for (let i = 0; i < this.dragBlock.size * 10; i += 10) {
-          indexs.push(num + i)
-        }
-      }
-
-      if (this.dragBlock.type === 'square-bend-top-right') {
-        for (let i = 0; i < this.dragBlock.size; i++) {
-          indexs.push(num + i)
-        }
-        for (let i = 0; i < this.dragBlock.size * 10; i += 10) {
-          indexs.push(num + this.dragBlock.size - 1 + i)
-        }
-      }
-
-      if (this.dragBlock.type === 'square-bend-bottom-left') {
-        for (let i = 0; i < this.dragBlock.size; i++) {
-          indexs.push(num + (this.dragBlock.size - 1) * 10 + i)
-        }
-        for (let i = 0; i < this.dragBlock.size * 10; i += 10) {
+        for (let i = 0; i < dragBlock.size * 10; i += 10) {
           indexs.push(num + i)
         }
       }
 
-      if (this.dragBlock.type === 'square-bend-bottom-right') {
-        for (let i = 0; i < this.dragBlock.size; i++) {
-          indexs.push(num + (this.dragBlock.size - 1) * 10 + i)
+      if (dragBlock.type === 'square-bend-top-right') {
+        for (let i = 0; i < dragBlock.size; i++) {
+          indexs.push(num + i)
         }
-        for (let i = 0; i < this.dragBlock.size * 10; i += 10) {
-          indexs.push(num + this.dragBlock.size - 1 + i)
+        for (let i = 0; i < dragBlock.size * 10; i += 10) {
+          indexs.push(num + dragBlock.size - 1 + i)
+        }
+      }
+
+      if (dragBlock.type === 'square-bend-bottom-left') {
+        for (let i = 0; i < dragBlock.size; i++) {
+          indexs.push(num + (dragBlock.size - 1) * 10 + i)
+        }
+        for (let i = 0; i < dragBlock.size * 10; i += 10) {
+          indexs.push(num + i)
+        }
+      }
+
+      if (dragBlock.type === 'square-bend-bottom-right') {
+        for (let i = 0; i < dragBlock.size; i++) {
+          indexs.push(num + (dragBlock.size - 1) * 10 + i)
+        }
+        for (let i = 0; i < dragBlock.size * 10; i += 10) {
+          indexs.push(num + dragBlock.size - 1 + i)
         }
       }
 
@@ -242,6 +292,7 @@ export default {
 
 .move-panel {
   margin-top: 50px;
+  height: 160px;
 }
 
 .drag-wrap {

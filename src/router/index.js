@@ -12,6 +12,7 @@ import NumberEliminate from '@/components/NumberEliminate'
 import Date from '@/components/DateSelect'
 import AbortUs from '@/components/AbortUs'
 import SpiderCard from '@/spiderCard/index'
+import MineSweeping from '@/mineSweeping/index'
 
 Vue.use(Router)
 
@@ -72,6 +73,11 @@ export default new Router({
       path: '/spider-card',
       name: 'SpiderCard',
       component: SpiderCard
+    },
+    {
+      path: '/mine-sweeping',
+      name: 'MineSweeping',
+      component: MineSweeping
     },
     {
       path: '/abort-us',
