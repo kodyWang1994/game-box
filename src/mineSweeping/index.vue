@@ -212,6 +212,7 @@ export default {
       this.isSuccess = false
       this.mineTotalCount = 0
       this.step = 0
+      this.blockColors = {}
       for (let w = 1; w <= this.blockCount * this.blockCount; w++) {
         const hasMine = _.sample(this.mine)
         if (hasMine) this.mineTotalCount += 1
