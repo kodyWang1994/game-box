@@ -132,6 +132,7 @@ export default {
       const displayGroup = _.groupBy(this.blockColors, 'isDisplay')
       if (displayGroup[false].length === this.mineTotalCount) {
         this.isSuccess = true
+        this.displayAllMine()
       }
     },
     clickBlock (index) {
