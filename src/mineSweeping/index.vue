@@ -151,10 +151,13 @@ export default {
       this.blockColors[index].isMark = !this.blockColors[index].isMark
     },
     clickBlock (index) {
-      if (this.isOver || this.blockColors[index].isMark) return
+      if (this.isOver) return
       if (!this.isSweeping) {
         // 如果不是翻开状态，则标记
         this.blockColors[index].isMark = !this.blockColors[index].isMark
+        return
+      }
+      if (this.blockColors[index].isMark) {
         return
       }
       this.step += 1
