@@ -48,7 +48,7 @@ export default {
       isSuccess: false,
       step: 0,
       blockCount: 9,
-      mine: [true, false, false, false, false], // 出现雷的概率，1/5
+      mine: [true, false, false, false, false, false], // 出现雷的概率，1/6
       blockColors: {}
     }
   },
