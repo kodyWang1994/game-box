@@ -16,7 +16,7 @@
 
     <div class="game-panel">
       <div v-for="(index, col) in (blockCount * blockCount)" :key="col" :style="'width: ' + blockSize + '; height: ' + blockSize + ';'">
-        <div class="col-item" :class="handleFontColor(index)" @click="clickBlock(index)">
+        <div class="col-item" :class="handleFontColor(index)" @click="clickBlock(index)" @click.right.prevent="changeMark(index)">
           {{handleMineStatus(index)}}
         </div>
       </div>
@@ -147,8 +147,11 @@ export default {
         this.displayAllFlag()
       }
     },
+    changeMark (index) {
+      this.blockColors[index].isMark = !this.blockColors[index].isMark
+    },
     clickBlock (index) {
-      if (this.isOver) return
+      if (this.isOver || this.blockColors[index].isMark) return
       if (!this.isSweeping) {
         // 如果不是翻开状态，则标记
         this.blockColors[index].isMark = !this.blockColors[index].isMark
