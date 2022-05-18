@@ -134,19 +134,24 @@ export default {
         this.blockColors[index].hasMine && (this.blockColors[index].isDisplay = true)
       }
     },
+    displayAllFlag () {
+      for (let index in this.blockColors) {
+        this.blockColors[index].hasMine && (this.blockColors[index].isMark = true)
+      }
+    },
     checkSuccess () {
       // 如果未翻开的个数等于炸弹的个数，则表示成功
       const displayGroup = _.groupBy(this.blockColors, 'isDisplay')
       if (displayGroup[false].length === this.mineTotalCount) {
         this.isSuccess = true
-        this.displayAllMine()
+        this.displayAllFlag()
       }
     },
     clickBlock (index) {
       if (this.isOver) return
       if (!this.isSweeping) {
         // 如果不是翻开状态，则标记
-        this.blockColors[index].isMark = true
+        this.blockColors[index].isMark = !this.blockColors[index].isMark
         return
       }
       this.step += 1
@@ -345,6 +350,7 @@ export default {
 }
 
 .over-panel {
+  padding-top: 25px;
   text-align: center;
 }
 
