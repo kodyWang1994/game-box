@@ -7,6 +7,13 @@
       <div @click="selectSize(20)">20</div>
     </div>
 
+    <div class="step-wrap">
+      <div>当前棋盘大小</div>
+      <div class="step">{{blockCount}}</div>
+      <div>步数</div>
+      <div class="step">{{step}}</div>
+    </div>
+
     <div class="game-panel">
       <div v-for="(index, col) in (blockCount * blockCount)" :key="col" :style="'width: ' + blockSize + '; height: ' + blockSize + ';'">
         <div class="col-item" :class="handleFontColor(index)" @click="clickBlock(index)">
@@ -21,7 +28,7 @@
     </div>
 
     <div class="over-panel">
-      <div class="over-text" v-if="isOver">很遗憾，失败了～</div>
+      <div class="over-text" v-if="isOver">{{step === 1 ? '第一步就踩雷，运气爆棚，买彩票去吧~' : '很遗憾，失败了～'}}</div>
       <div class="over-text blue" v-else-if="isSuccess">恭喜！成功啦～</div>
       <span @click="init" class="restart">重新开始</span>
       <span @click="goHome" class="restart">返回首页</span>
@@ -142,6 +149,7 @@ export default {
         this.blockColors[index].isMark = true
         return
       }
+      this.step += 1
       this.blockColors[index].isDisplay = true
       if (this.blockColors[index].hasMine) {
         this.isOver = true
@@ -192,6 +200,7 @@ export default {
       this.isOver = false
       this.isSuccess = false
       this.mineTotalCount = 0
+      this.step = 0
       for (let w = 1; w <= this.blockCount * this.blockCount; w++) {
         const hasMine = _.sample(this.mine)
         if (hasMine) this.mineTotalCount += 1
