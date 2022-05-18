@@ -57,6 +57,7 @@
       <div class="restart" @click.stop="selectLevel(1)">中级</div>
       <div class="restart" @click.stop="selectLevel(2)">高级</div>
       <div class="restart" @click.stop="selectLevel(3)">大师</div>
+      <div class="restart" @click.stop="goHome">首页</div>
     </div>
   </div>
 </template>
@@ -106,6 +107,9 @@ export default {
     document.body.onresize = this.getCardSize
   },
   methods: {
+    goHome () {
+      this.$router.push('/')
+    },
     getCardSize () {
       console.log('getCardSize')
       this.contentWidth = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth - (20 * 2)

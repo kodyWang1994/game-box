@@ -9,16 +9,22 @@
 
     <div class="game-panel">
       <div v-for="(index, col) in (blockCount * blockCount)" :key="col" :style="'width: ' + blockSize + '; height: ' + blockSize + ';'">
-        <div class="col-item" :class="blockColors[index].isDisplay ? 'white' : ''" @click="clickBlock(index)">
+        <div class="col-item" :class="handleFontColor(index)" @click="clickBlock(index)">
           {{handleMineStatus(index)}}
         </div>
       </div>
+    </div>
+
+    <div class="option-panel">
+      <span @click="changeStatus(true)" class="option-btn" :class="isSweeping ? 'active' : ''">翻开</span>
+      <span @click="changeStatus(false)" class="option-btn" :class="isSweeping ? '' : 'active'">插旗</span>
     </div>
 
     <div class="over-panel">
       <div class="over-text" v-if="isOver">很遗憾，失败了～</div>
       <div class="over-text blue" v-else-if="isSuccess">恭喜！成功啦～</div>
       <span @click="init" class="restart">重新开始</span>
+      <span @click="goHome" class="restart">返回首页</span>
     </div>
   </div>
 </template>
@@ -29,6 +35,7 @@ import _ from 'underscore'
 export default {
   data () {
     return {
+      isSweeping: true, // 翻牌状态
       mineTotalCount: 0,
       isOver: false,
       isSuccess: false,
@@ -47,12 +54,38 @@ export default {
     }
   },
   methods: {
+    goHome () {
+      this.$router.push('/')
+    },
+    changeStatus (isSweeping) {
+      this.isSweeping = isSweeping
+    },
     selectSize (size) {
       this.blockCount = size
       this.init()
     },
     nextPass () {
       this.selectSize(16)
+    },
+    handleFontColor (index) {
+      let className = ''
+      if (this.blockColors[index].isDisplay) {
+        className = 'white-bg'
+        if (this.blockColors[index].mineCount === 1) {
+          className = className + ' blue'
+        } else if (this.blockColors[index].mineCount === 2) {
+          className = className + ' yellow'
+        } else if (this.blockColors[index].mineCount === 3) {
+          className = className + ' green'
+        } else if (this.blockColors[index].mineCount === 4) {
+          className = className + ' pink'
+        } else if (this.blockColors[index].mineCount === 5) {
+          className = className + ' red'
+        } else if (this.blockColors[index].hasMine) {
+          className = className + ' red-bg'
+        }
+      }
+      return className
     },
     handleMineStatus (index) {
       if (this.blockColors[index].isDisplay) {
@@ -61,6 +94,8 @@ export default {
         } else if (this.blockColors[index].mineCount) {
           return this.blockColors[index].mineCount
         }
+      } else if (this.blockColors[index].isMark) {
+        return '🚩'
       } else {
         return ''
       }
@@ -101,6 +136,11 @@ export default {
     },
     clickBlock (index) {
       if (this.isOver) return
+      if (!this.isSweeping) {
+        // 如果不是翻开状态，则标记
+        this.blockColors[index].isMark = true
+        return
+      }
       this.blockColors[index].isDisplay = true
       if (this.blockColors[index].hasMine) {
         this.isOver = true
@@ -156,7 +196,8 @@ export default {
         if (hasMine) this.mineTotalCount += 1
         this.$set(this.blockColors, w, {
           hasMine,
-          isDisplay: false
+          isDisplay: false,
+          isMark: false
         })
       }
       for (let index in this.blockColors) {
@@ -223,18 +264,28 @@ export default {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  font-weight: bold;
+  font-size: 13px;
 }
 
-.white {
+.white-bg {
   background-color: #FFF;
 }
 
+.red-bg {
+  background-color: red;
+}
+
+.pink {
+  color: rgb(187, 63, 63);
+}
+
 .red {
-  background-color: #FFC1C1;
+  color: red;
 }
 
 .yellow {
-  background-color: #EEEE00;
+  color: #cdcd21;
 }
 
 .blue {
@@ -242,7 +293,7 @@ export default {
 }
 
 .green {
-  background-color: #66CD00;
+  color: #66CD00;
 }
 
 .color-btn-wrap {
@@ -266,18 +317,36 @@ export default {
   font-size: 15px;
 }
 
+.option-panel {
+  padding-top: 20px;
+  text-align: center;
+}
+
+.option-btn {
+  padding: 10px 20px;
+  margin: 0 5px;
+  border: 1px solid rgb(43, 90, 192);
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.active {
+  box-shadow: inset 1px 1px 8px 2px #0c3970;
+}
+
 .over-panel {
   text-align: center;
 }
 
 .over-text {
+  margin-top: 15px;
   font-size: 18px;
   color: #4B0082;
   font-weight: bold;
 }
 
 .restart {
-  margin-top: 30px;
+  margin-top: 15px;
   padding: 10px 15px;
   background-color: #66CD00;
   border-radius: 15px;
