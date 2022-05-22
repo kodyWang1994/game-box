@@ -15,9 +15,11 @@
     </div>
 
     <div class="game-panel">
-      <div v-for="(index, col) in (blockCount * blockCount)" :key="col" :style="'width: ' + blockSize + '; height: ' + blockSize + ';'">
-        <div class="col-item" :class="handleFontColor(index)" @click="clickBlock(index)" @click.right.prevent="changeMark(index)">
-          {{handleMineStatus(index)}}
+      <div class="game-scroll-panel" :class="isScale ? 'can-scroll' : ''">
+        <div v-for="(index, col) in (blockCount * blockCount)" :key="col" :style="'width: ' + blockSize + '; height: ' + blockSize + ';'">
+          <div class="col-item" :class="handleFontColor(index)" @click="clickBlock(index)" @click.right.prevent="changeMark(index)">
+            {{handleMineStatus(index)}}
+          </div>
         </div>
       </div>
     </div>
@@ -25,6 +27,7 @@
     <div class="option-panel">
       <span @click="changeStatus(true)" class="option-btn" :class="isSweeping ? 'active' : ''">翻开</span>
       <span @click="changeStatus(false)" class="option-btn" :class="isSweeping ? '' : 'active'">插旗</span>
+      <span @click="isScale = !isScale" class="option-btn" :class="isScale ? 'active' : ''">放大</span>
     </div>
 
     <div class="over-panel">
@@ -42,6 +45,7 @@ import _ from 'underscore'
 export default {
   data () {
     return {
+      isScale: false, // 放大
       isSweeping: true, // 翻牌状态
       mineTotalCount: 0,
       isOver: false,
@@ -262,9 +266,6 @@ export default {
 }
 
 .game-panel {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
   margin: 20px auto;
   position: relative;
   width: 90vw;
@@ -274,6 +275,20 @@ export default {
   overflow: hidden;
   box-shadow: 9px 9px 10px 0px rgb(0 0 0 / 50%);
   background-color: #333;
+  overflow: scroll;
+}
+
+.game-scroll-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.can-scroll {
+  width: 1000px;
+  height: 1000px;
 }
 
 .col-item {
