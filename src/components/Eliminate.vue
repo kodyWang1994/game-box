@@ -63,25 +63,34 @@ export default {
       for (const key of needCleanBlock) {
         delete this.blockColors[key]
       }
-      var colBlock = _.groupBy(needCleanBlock, num => {
-        return num % 10
-      })
-      for (const col in colBlock) {
-        var colCleanValue = colBlock[col]
-        let colMax = _.max(colCleanValue)
-        var colValue = []
-        for (let i = colMax; i > 10; i -= 10) {
-          colValue.push(i)
-        }
-        var needDownBlocks = _.difference(colValue, colCleanValue)
-        for (const index in colValue) {
-          if (!_.isEmpty(needDownBlocks)) {
-            this.blockColors[colValue[index]] = this.blockColors[needDownBlocks.shift()]
-          } else {
-            this.fullBlock(colValue[index])
+      this.$forceUpdate()
+      this.$nextTick(() => {
+        setTimeout(() => {
+          // 将被删除的区块按列分类
+          var colBlock = _.groupBy(needCleanBlock, num => {
+            return num % 10
+          })
+          for (const col in colBlock) {
+            var colCleanValue = colBlock[col]
+            let colMax = _.max(colCleanValue)
+            var colValue = [] // 将有变动的列，从大到小全部找出来
+            for (let i = colMax; i > 10; i -= 10) {
+              colValue.push(i)
+            }
+            // 找到仍然存在的区块，需要将它们下放到被消除的区块中
+            var needDownBlocks = _.difference(colValue, colCleanValue)
+            for (const index in colValue) {
+              if (!_.isEmpty(needDownBlocks)) {
+                this.blockColors[colValue[index]] = this.blockColors[needDownBlocks.shift()]
+              } else {
+                // 如果消除的是最顶部的方块，则该needDownBlocks数组为空，需要随机方块填充
+                this.fullBlock(colValue[index])
+              }
+            }
           }
-        }
-      }
+          this.$forceUpdate()
+        }, 500)
+      })
     },
     fullBlock (index) {
       this.blockColors[index] = _.sample(this.colors)
